@@ -1,0 +1,23 @@
+spring:
+  profiles:
+    active: local
+#    active: dev
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+      
+  messages:
+    basename: messages/message,messages/validation
+    encoding: UTF-8
+
+custom:
+  format:
+    date: yyyy-MM-dd
+    dateStr: yyyyMMdd
+    datetime: yyyy-MM-dd HH:mm:ss.SS
+    datetimeStr: yyyyMMddHHmmss
+  page:
+    size10: 10
+    size50: 50
+    size100: 100

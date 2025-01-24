@@ -1,0 +1,169 @@
+package com.seowoninfo.backend01.common.jwt;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.seowoninfo.backend01.common.constant.ConstantsStatic;
+import com.seowoninfo.backend01.common.exception.GlobalExceptionHandler;
+import com.seowoninfo.backend01.common.response.ResponseCode;
+import com.seowoninfo.backend01.common.util.UtilCommon;
+import com.seowoninfo.backend01.common.util.UtilMessage;
+import com.seowoninfo.backend01.common.util.UtilProperty;
+import com.seowoninfo.backend01.member.dto.MemberLoginDto;
+import com.seowoninfo.backend01.token.dto.TokenCreateDto;
+import com.seowoninfo.backend01.token.entity.Token;
+import com.seowoninfo.backend01.token.repository.TokenRepository;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.util.StreamUtils;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+@Slf4j
+public class LoginFilter extends UsernamePasswordAuthenticationFilter {
+
+    // 로그인 검증을 담당
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+    private final TokenRepository tokenRepository;
+    private final ObjectMapper objectMapper;
+    private final UtilMessage utilMessage;
+
+    private Long JWT_ACCESS_EXPIRATION = Long.valueOf(UtilProperty.getProperty("spring.jwt.access.expiration"));
+    private Long JWT_REFRESH_EXPIRATION = Long.valueOf(UtilProperty.getProperty("spring.jwt.refresh.expiration"));
+
+    public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, TokenRepository tokenRepository, ObjectMapper objectMapper, UtilMessage utilMessage) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+        this.tokenRepository = tokenRepository;
+        this.objectMapper = objectMapper;
+        this.utilMessage = utilMessage;
+    }
+
+    /**
+     * 로그인을 위한 인증
+     */
+    @Override
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+        // 클라이언트 요청에서 id, password 추출
+        String memberId = "";
+        String password = "";
+
+        try {
+            // 로그인시 입력받을 필드
+            MemberLoginDto loginDto = objectMapper.readValue(StreamUtils.copyToString(request.getInputStream(), StandardCharsets.UTF_8), MemberLoginDto.class);
+            memberId = loginDto.getMemberId();
+            password = loginDto.getPassword();
+            log.debug("로그인정보:{}", loginDto.toString());
+        } catch (JsonMappingException e) {
+            log.error("이건 언제터지지(JsonMappingException)");
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            log.error("이건 언제터지지(JsonProcessingException)");
+            e.printStackTrace();
+        } catch (IOException e) {
+            log.error("이건 언제터지지(IOException)");
+            e.printStackTrace();
+        }
+
+
+        // 시큐리티에서 id, pw 를 검증하기 위해서는 token에 담아야 함
+        log.debug("before: {}", memberId + ":" + password);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(memberId, password);
+        log.debug("after: {}", authToken);
+
+        // 토큰에 담은 값을 검증 하기위해 AuthenticationManager로 전달
+        return authenticationManager.authenticate(authToken);
+    }
+
+    /**
+     * 로그인 성공시실행하는 메서드(여기서 JWT를 발급하면 됨)
+     */
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+// 싱글토큰방식 안쓸거야
+//		CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal();
+//		String memberId = customUserDetails.getUsername();	// 아이디
+//
+//		// role
+//		Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
+//		Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+//		GrantedAuthority auth = iterator.next();
+//		String role = auth.getAuthority();
+//
+//		String token = jwtUtil.createJwt(memberId, role, 60*60*10L);
+//		response.addHeader("Authorization", "Bearer " + token);
+
+        // 유저정보
+        String memberId = authResult.getName();
+
+        // role
+        Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
+        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+        GrantedAuthority auth = iterator.next();
+        String meberRole = auth.getAuthority();
+
+        // 토큰생성
+        String accessToken = jwtUtil.createJwt("accessToken", memberId, meberRole, JWT_ACCESS_EXPIRATION * 1000L);
+        String refreshToken = jwtUtil.createJwt("refreshToken", memberId, meberRole, JWT_REFRESH_EXPIRATION * 1000L);
+
+        // refresh 토큰 삭제
+        tokenRepository.deleteByMemberId(memberId);
+
+        // refresh 토큰 저장
+        TokenCreateDto refreshInsertDto = new TokenCreateDto();
+        refreshInsertDto.setMemberId(memberId);
+        refreshInsertDto.setRefreshToken(refreshToken);
+        refreshInsertDto.setRefreshTokenExpiration(LocalDateTime.now().plusSeconds(JWT_REFRESH_EXPIRATION));
+        tokenRepository.save(Token.toEntity(refreshInsertDto));
+
+        // 응답설정
+        response.setHeader("accessToken", accessToken);                    // access 토큰은 헤더로 내려줌
+        response.addCookie(UtilCommon.createCookie("refreshToken", refreshToken));    // refresh 토큰은 쿠키에 저장
+
+
+        response.setStatus(HttpStatus.OK.value());
+        response.setContentType("application/json;charset=UTF-8");
+
+        Map<String, Object> responseBody = new HashMap<String, Object>();
+        responseBody.put("status", ResponseCode.SUCCESS.code());
+        responseBody.put("message", utilMessage.getMessage("login.success", null));
+        responseBody.put("data", null);
+        responseBody.put("locale", LocaleContextHolder.getLocale());
+        responseBody.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern(ConstantsStatic.format_datetime)));
+
+        PrintWriter writer = response.getWriter();
+        writer.write(new ObjectMapper().writeValueAsString(responseBody));
+        writer.flush();
+        writer.close();
+
+    }
+
+    /**
+     * 로그인 실패시 실행하는 메서드
+     */
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        GlobalExceptionHandler.filterExceptionHandler(response, ResponseCode.FAIL.code(), utilMessage.getMessage("login.fail", null));
+    }
+
+}
