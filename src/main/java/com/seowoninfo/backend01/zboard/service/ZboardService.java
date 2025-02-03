@@ -8,10 +8,8 @@ import com.seowoninfo.backend01.common.util.UtilFile;
 import com.seowoninfo.backend01.common.util.UtilMessage;
 import com.seowoninfo.backend01.zboard.dto.*;
 import com.seowoninfo.backend01.zboard.entity.Zboard;
-import com.seowoninfo.backend01.zboard.entity.Zcomments;
 import com.seowoninfo.backend01.zboard.entity.Zfile;
 import com.seowoninfo.backend01.zboard.repository.ZboardRepository;
-import com.seowoninfo.backend01.zboard.repository.ZcommentsRepository;
 import com.seowoninfo.backend01.zboard.repository.ZfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +41,6 @@ public class ZboardService {
 
 	private final UtilMessage utilMessage;
 	private final ZboardRepository boardRepository;
-	private final ZcommentsRepository commentsRepository;
 	private final ZfileRepository fileRepository;
 	
 	@Value("${custom.format.dateStr}") private String FORMAT_DATESTR;
@@ -212,56 +209,5 @@ public class ZboardService {
 		
 		return ZboardResponseDto.toDto(entity);
 	}
-	
-	/**
-	 * 댓글리스트
-	 * @param boardSeq
-	 * @param pageable
-	 * @return
-	 * @throws Exception
-	 */
-	public Map<String, Object> commentsList(Long boardSeq, Pageable pageable) throws Exception {
-		Map<String, Object> map = new HashMap<String, Object>();
-		Page<ZcommentsResponseDto> page = commentsRepository.findCommentsAll(boardSeq, pageable);
-		List<ZcommentsResponseDto> resultList = page.getContent();
-		map.put("pageInfo", PageResponse.pageInfo(page));
-		map.put("resultList", resultList);
-		return map;
-	}
 
-	
-	/**
-	 * 댓글 등록
-	 * @param paramDto
-	 * @return
-	 */
-	@Transactional
-	public ZcommentsResponseDto commentsCreate(ZcommentsCreateDto paramDto) throws Exception{
-		Zcomments entity = commentsRepository.save(Zcomments.toEntity(paramDto));
-		return ZcommentsResponseDto.toDto(entity);
-	}
-	
-	/**
-	 * 댓글 수정
-	 * @param paramDto
-	 * @return
-	 */
-	@Transactional
-	public ZcommentsResponseDto commentsEdit(Long boardSeq, ZcommentsModifyDto paramDto) throws Exception{
-		Zcomments entity = commentsRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.edit.nodata", null)));
-		entity.modifyComments(paramDto);
-		return ZcommentsResponseDto.toDto(entity);
-	}
-	
-	/**
-	 * 댓글 삭제
-	 * @param boardSeq
-	 * @return
-	 */
-	@Transactional
-	public ZcommentsResponseDto commentsDelete(Long boardSeq) throws Exception{
-		Zcomments entity = commentsRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.delete.nodata", null)));
-		commentsRepository.delete(entity);
-		return ZcommentsResponseDto.toDto(entity);
-	}
 }

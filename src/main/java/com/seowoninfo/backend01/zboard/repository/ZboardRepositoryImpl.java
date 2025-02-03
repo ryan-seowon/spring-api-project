@@ -1,4 +1,4 @@
-package com.seowoninfo.backend01.zboard.repository.custom;
+package com.seowoninfo.backend01.zboard.repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.ExpressionUtils;
@@ -29,7 +29,7 @@ import static com.seowoninfo.backend01.zboard.entity.QZcomments.zcomments;
 import static com.seowoninfo.backend01.zboard.entity.QZfile.zfile;
 
 @RequiredArgsConstructor
-public class ZboardCustomImpl implements ZboardCustom {
+public class ZboardRepositoryImpl implements ZboardRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
 	
@@ -107,7 +107,7 @@ public class ZboardCustomImpl implements ZboardCustom {
 		return builder
 				.and(createdDttmBetween(paramDto.getStartDate(), paramDto.getEndDate()))
 				.and(titleContains(paramDto.getSearchValue()))
-				.or(contentsContains(paramDto.getSearchValue()));
+				.and(contentsContains(paramDto.getSearchValue()));
 		
 	}
 

@@ -1,4 +1,4 @@
-package com.seowoninfo.backend01.zboard.repository.custom;
+package com.seowoninfo.backend01.zboard.repository;
 
 /**
  * FileName    : IntelliJ IDEA
@@ -6,6 +6,6 @@ package com.seowoninfo.backend01.zboard.repository.custom;
  * Date        : 2025-01-24
  * Description :
  */
-public interface ZfileCustom {
+public interface ZfileRepositoryCustom {
 
 }

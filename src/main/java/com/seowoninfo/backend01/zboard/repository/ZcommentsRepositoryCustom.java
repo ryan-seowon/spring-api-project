@@ -1,10 +1,10 @@
-package com.seowoninfo.backend01.zboard.repository.custom;
+package com.seowoninfo.backend01.zboard.repository;
 
 import com.seowoninfo.backend01.zboard.dto.ZcommentsResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface ZcommentsCustom {
+public interface ZcommentsRepositoryCustom {
 
 
 	/**

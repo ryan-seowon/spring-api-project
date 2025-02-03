@@ -1,4 +1,4 @@
-package com.seowoninfo.backend01.zboard.repository.custom;
+package com.seowoninfo.backend01.zboard.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -13,7 +13,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class ZcommentsCustomImpl implements ZcommentsCustom {
+public class ZcommentsRepositoryImpl implements ZcommentsRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
 	

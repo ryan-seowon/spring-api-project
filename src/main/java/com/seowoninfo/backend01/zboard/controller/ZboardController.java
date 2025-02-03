@@ -88,45 +88,5 @@ public class ZboardController {
         return ApiResponse.success();
     }
 
-    @Operation(summary = "댓글 리스트", description = "댓글 리스트")
-    @GetMapping("/comments")
-    public ApiResponse<Map<String, Object>> commentsList(
-            @RequestParam(value = "boardSeq", required = true) Long boardSeq
-            , @PageableDefault(size = 10, sort = "commentsSeq", direction = Sort.Direction.DESC)Pageable pageable) throws Exception{
-        return ApiResponse.success(boardService.commentsList(boardSeq, pageable));
-    }
 
-    @Operation(summary = "댓글 등록", description = "댓글을 등록한다")
-    @PostMapping("/comments")
-    public ApiResponse<JSONObject> commentsCreate(@Valid @RequestBody ZcommentsCreateDto paramDto) throws Exception{
-        log.debug("등록파람: {}", paramDto.toString());
-        ZcommentsResponseDto result = boardService.commentsCreate(paramDto);
-
-        JSONObject json = new JSONObject();
-        json.put("result", result);
-
-        return ApiResponse.success(json);
-    }
-
-    @Operation(summary = "댓글 수정", description = "댓글을 수정한다")
-    @PatchMapping("/comments/{commentsSeq}")
-    public ApiResponse<JSONObject> scommentsEdit(@PathVariable Long commentsSeq, @RequestBody ZcommentsModifyDto paramDto) throws Exception{
-        ZcommentsResponseDto result = boardService.commentsEdit(commentsSeq, paramDto);
-
-        JSONObject json = new JSONObject();
-        json.put("result", result);
-
-        return ApiResponse.success();
-    }
-
-    @Operation(summary = "댓글 삭제", description = "댓글을 삭제한다")
-    @DeleteMapping("/comments/{commentsSeq}")
-    public ApiResponse<JSONObject> scommentsCreate(@PathVariable Long commentsSeq) throws Exception{
-        ZcommentsResponseDto result = boardService.commentsDelete(commentsSeq);
-
-        JSONObject json = new JSONObject();
-        json.put("result", result);
-
-        return ApiResponse.success();
-    }
 }
