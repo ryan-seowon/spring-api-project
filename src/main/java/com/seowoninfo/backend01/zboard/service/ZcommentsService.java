@@ -42,7 +42,7 @@ public class ZcommentsService {
      * 댓글리스트
      */
     public Map<String, Object> commentsList(Long boardSeq, Pageable pageable) throws Exception {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         List<ZcommentsResponseDto> resultList = new ArrayList<>();
         Map<Long, ZcommentsResponseDto> imsiMap = new HashMap<>();
 

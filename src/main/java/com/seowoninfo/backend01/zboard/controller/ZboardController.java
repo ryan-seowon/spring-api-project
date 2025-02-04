@@ -1,14 +1,16 @@
 package com.seowoninfo.backend01.zboard.controller;
 
 import com.seowoninfo.backend01.common.response.ApiResponse;
-import com.seowoninfo.backend01.zboard.dto.*;
+import com.seowoninfo.backend01.zboard.dto.ZboardCreateDto;
+import com.seowoninfo.backend01.zboard.dto.ZboardModifyDto;
+import com.seowoninfo.backend01.zboard.dto.ZboardResponseDto;
+import com.seowoninfo.backend01.zboard.dto.ZboardSearchDto;
 import com.seowoninfo.backend01.zboard.service.ZboardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -45,46 +47,42 @@ public class ZboardController {
     @Operation(summary = "게시판 상세", description = "게시판 상세")
     @GetMapping("/{boardSeq}")
     public ApiResponse<Map<String, Object>> boardDetail(@PathVariable Long boardSeq) throws Exception{
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("result", boardService.boardDetail(boardSeq));
         return ApiResponse.success(map);
     }
 
     @Operation(summary = "게시판 등록", description = "게시판을 등록한다")
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<JSONObject> boardCreate(
+    public ApiResponse<Map<String, Object>> boardCreate(
             @Valid @RequestPart(name = "paramDto") ZboardCreateDto paramDto,
             @RequestPart(name = "paramFiles", required = false) MultipartFile[] paramFiles) throws Exception{
         log.debug("등록파람: {}", paramDto.toString());
         ZboardResponseDto result = boardService.boardCreate(paramDto, paramFiles);
 
-        JSONObject json = new JSONObject();
-        json.put("result", result);
+        Map<String, Object> map = new HashMap<>();
+        map.put("result", result);
 
-        return ApiResponse.success(json);
+        return ApiResponse.success(map);
     }
 
     @Operation(summary = "게시판 수정", description = "게시판을 수정한다")
     @PatchMapping(value = "/{boardSeq}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<JSONObject> boardModify(@PathVariable Long boardSeq,
+    public ApiResponse<Map<String, Object>> boardModify(@PathVariable Long boardSeq,
                                               @Valid @RequestPart(name = "paramDto") ZboardModifyDto paramDto,
                                               @RequestPart(name = "files", required = false) MultipartFile[] files) throws Exception{
         ZboardResponseDto result = boardService.boardModify(boardSeq, paramDto, files);
 
-        JSONObject json = new JSONObject();
-        json.put("result", result);
+        Map<String, Object> map = new HashMap<>();
+        map.put("result", result);
 
-        return ApiResponse.success();
+        return ApiResponse.success(map);
     }
 
     @Operation(summary = "게시판 삭제", description = "게시판을 삭제한다")
     @DeleteMapping("/{boardSeq}")
-    public ApiResponse<JSONObject> boardCreate(@PathVariable Long boardSeq) throws Exception{
-        ZboardResponseDto result = boardService.boardDelete(boardSeq);
-
-        JSONObject json = new JSONObject();
-        json.put("result", result);
-
+    public ApiResponse<Map<String, Object>> boardCreate(@PathVariable Long boardSeq) throws Exception{
+        boardService.boardDelete(boardSeq);
         return ApiResponse.success();
     }
 

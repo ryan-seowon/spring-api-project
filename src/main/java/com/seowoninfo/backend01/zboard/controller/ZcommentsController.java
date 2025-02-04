@@ -10,12 +10,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -43,35 +43,31 @@ public class ZcommentsController {
 
     @Operation(summary = "댓글 등록", description = "댓글을 등록한다")
     @PostMapping("/")
-    public ApiResponse<JSONObject> commentsCreate(@Valid @RequestBody ZcommentsCreateDto paramDto) throws Exception{
+    public ApiResponse<Map<String, Object>> commentsCreate(@Valid @RequestBody ZcommentsCreateDto paramDto) throws Exception{
         log.debug("등록파람: {}", paramDto.toString());
         ZcommentsResponseDto result = zcommentsService.commentsCreate(paramDto);
 
-        JSONObject json = new JSONObject();
-        json.put("result", result);
+        Map<String, Object> map = new HashMap<>();
+        map.put("result", result);
 
-        return ApiResponse.success(json);
+        return ApiResponse.success(map);
     }
 
     @Operation(summary = "댓글 수정", description = "댓글을 수정한다")
     @PatchMapping("/{commentsSeq}")
-    public ApiResponse<JSONObject> scommentsModify(@PathVariable Long commentsSeq, @RequestBody ZcommentsModifyDto paramDto) throws Exception{
+    public ApiResponse<Map<String, Object>> scommentsModify(@PathVariable Long commentsSeq, @RequestBody ZcommentsModifyDto paramDto) throws Exception{
         ZcommentsResponseDto result = zcommentsService.commentsModify(commentsSeq, paramDto);
 
-        JSONObject json = new JSONObject();
-        json.put("result", result);
+        Map<String, Object> map = new HashMap<>();
+        map.put("result", result);
 
-        return ApiResponse.success(json);
+        return ApiResponse.success(map);
     }
 
     @Operation(summary = "댓글 삭제", description = "댓글을 삭제한다")
     @DeleteMapping("/{commentsSeq}")
-    public ApiResponse<JSONObject> scommentsCreate(@PathVariable Long commentsSeq) throws Exception{
-        ZcommentsResponseDto result = zcommentsService.commentsDelete(commentsSeq);
-
-        JSONObject json = new JSONObject();
-        json.put("result", result);
-
+    public ApiResponse<Map<String, Object>> scommentsCreate(@PathVariable Long commentsSeq) throws Exception{
+        zcommentsService.commentsDelete(commentsSeq);
         return ApiResponse.success();
     }
 }

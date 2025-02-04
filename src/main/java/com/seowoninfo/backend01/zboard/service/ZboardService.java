@@ -18,7 +18,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,10 +49,6 @@ public class ZboardService {
 
 	/**
 	 * 게시판리스트
-	 * @param paramDto
-	 * @param pageable
-	 * @return
-	 * @throws Exception
 	 */
 	public Map<String, Object> boardList(ZboardSearchDto paramDto, Pageable pageable) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -66,9 +61,6 @@ public class ZboardService {
 
 	/**
 	 * 게시판상세
-	 * @param boardSeq
-	 * @return
-	 * @throws Exception
 	 */
 	public ZboardResponseDto boardDetail(Long boardSeq) throws Exception{
 //		Zboard zboard = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.get.nodata", null)));
@@ -88,8 +80,6 @@ public class ZboardService {
 	
 	/**
 	 * 게시판 등록
-	 * @param paramDto
-	 * @return
 	 */
 	@Transactional
 	public ZboardResponseDto boardCreate(ZboardCreateDto paramDto, MultipartFile[] paramFiles) throws Exception{
@@ -135,8 +125,6 @@ public class ZboardService {
 	
 	/**
 	 * 게시판 수정
-	 * @param paramDto
-	 * @return
 	 */
 	@Transactional
 	public ZboardResponseDto boardModify(Long boardSeq, ZboardModifyDto paramDto, MultipartFile[] files) throws Exception{
@@ -190,8 +178,6 @@ public class ZboardService {
 	
 	/**
 	 * 게시판 삭제
-	 * @param boardSeq
-	 * @return
 	 */
 	@Transactional
 	public ZboardResponseDto boardDelete(Long boardSeq) throws Exception{

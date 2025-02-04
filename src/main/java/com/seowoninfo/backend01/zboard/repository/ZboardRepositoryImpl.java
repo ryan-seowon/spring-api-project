@@ -61,7 +61,7 @@ public class ZboardRepositoryImpl implements ZboardRepositoryCustom {
 			))
 			.from(zboard)
 			.where(allCondition(paramDto))
-			.orderBy(ORDERS.stream().toArray(OrderSpecifier[]::new))
+			.orderBy(ORDERS.toArray(OrderSpecifier[]::new))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
@@ -76,22 +76,16 @@ public class ZboardRepositoryImpl implements ZboardRepositoryCustom {
 
 	/**
 	 * sort
-	 * @param pageable
-	 * @return
 	 */
 	private List<OrderSpecifier> getAllOrderSpecifiers(Pageable pageable) {
 		List<OrderSpecifier> ORDERS = new ArrayList<>();
 		if (UtilCommon.isNotEmpty(pageable.getSort())) {
 			for (Sort.Order order : pageable.getSort()) {
 				Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
-				switch (order.getProperty()) {
-					case "boardSeq":
-						OrderSpecifier<?> orderId = UtilQueryDsl.getSortedColumn(direction, zboard, "boardSeq");
-						ORDERS.add(orderId);
-						break;
-					default:
-						break;
-				}
+                if (order.getProperty().equals("boardSeq")) {
+                    OrderSpecifier<?> orderId = UtilQueryDsl.getSortedColumn(direction, zboard, "boardSeq");
+                    ORDERS.add(orderId);
+                }
 			}
 		}
 		return ORDERS;
@@ -99,8 +93,6 @@ public class ZboardRepositoryImpl implements ZboardRepositoryCustom {
 
 	/**
 	 * 검색조건
-	 * @param paramDto
-	 * @return
 	 */
 	private BooleanBuilder allCondition(ZboardSearchDto paramDto) {
 		BooleanBuilder builder = new BooleanBuilder();
@@ -113,9 +105,6 @@ public class ZboardRepositoryImpl implements ZboardRepositoryCustom {
 
 	/**
 	 * 기간조건
-	 * @param startDate
-	 * @param endDate
-	 * @return
 	 */
 	private BooleanExpression createdDttmBetween(LocalDate startDate, LocalDate endDate) {
 		if (UtilCommon.isEmpty(startDate) && UtilCommon.isEmpty(endDate)) {
@@ -126,8 +115,6 @@ public class ZboardRepositoryImpl implements ZboardRepositoryCustom {
 
 	/**
 	 * 제목포함
-	 * @param searchValue
-	 * @return
 	 */
 	private BooleanExpression titleContains(String searchValue) {
 		return UtilCommon.isEmpty(searchValue) ? null : zboard.boardTitle.containsIgnoreCase(searchValue);
@@ -135,8 +122,6 @@ public class ZboardRepositoryImpl implements ZboardRepositoryCustom {
 	
 	/**
 	 * 내용포함
-	 * @param searchValue
-	 * @return
 	 */
 	private BooleanExpression contentsContains(String searchValue) {
 		return UtilCommon.isEmpty(searchValue) ? null : zboard.boardContents.containsIgnoreCase(searchValue);
@@ -160,7 +145,7 @@ public class ZboardRepositoryImpl implements ZboardRepositoryCustom {
 		.from(zboard)
 		.where(zboard.boardSeq.eq(boardSeq))
 		.fetchOne();
-		
+
 		return query;
 	}
 }

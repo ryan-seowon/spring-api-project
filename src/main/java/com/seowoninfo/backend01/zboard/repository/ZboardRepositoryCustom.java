@@ -9,17 +9,11 @@ public interface ZboardRepositoryCustom {
 
 	/**
 	 * 게시글리스트
-	 * @param paramDto
-	 * @param pageable
-	 * @return
 	 */
 	Page<ZboardResponseDto> findBoardAll(ZboardSearchDto paramDto, Pageable pageable);
 	
 	/**
 	 * 게시글상세
-	 * @param boardSeq
-	 * @return
-	 * @throws Exception
 	 */
 	ZboardResponseDto findBoardbySeq(Long boardSeq) throws Exception;
 }

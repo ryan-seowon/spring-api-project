@@ -9,9 +9,6 @@ public interface ZcommentsRepositoryCustom {
 
 	/**
 	 * 댓글글리스트
-	 * @param boardSeq
-	 * @param pageable
-	 * @return
 	 */
 	Page<ZcommentsResponseDto> findCommentsAll(Long boardSeq, Pageable pageable);
 }
