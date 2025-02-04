@@ -5,7 +5,6 @@ import com.seowoninfo.backend01.common.response.PageResponse;
 import com.seowoninfo.backend01.common.response.ResponseCode;
 import com.seowoninfo.backend01.common.util.UtilCommon;
 import com.seowoninfo.backend01.common.util.UtilMessage;
-import com.seowoninfo.backend01.zboard.dto.ZboardResponseDto;
 import com.seowoninfo.backend01.zboard.dto.ZcommentsCreateDto;
 import com.seowoninfo.backend01.zboard.dto.ZcommentsModifyDto;
 import com.seowoninfo.backend01.zboard.dto.ZcommentsResponseDto;
@@ -16,7 +15,6 @@ import com.seowoninfo.backend01.zboard.repository.ZcommentsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,10 +40,6 @@ public class ZcommentsService {
 
     /**
      * 댓글리스트
-     * @param boardSeq
-     * @param pageable
-     * @return
-     * @throws Exception
      */
     public Map<String, Object> commentsList(Long boardSeq, Pageable pageable) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -55,13 +49,12 @@ public class ZcommentsService {
         // 댓글 부모 밑에 자식 붙이기
         Page<ZcommentsResponseDto> page = commentsRepository.findCommentsAll(boardSeq, pageable);
         List<ZcommentsResponseDto> imsiResultList = page.getContent();
-        imsiResultList.stream().forEach(item -> {
-            ZcommentsResponseDto zcommentsResponseDto = item;
-            imsiMap.put(item.getCommentsSeq(), zcommentsResponseDto);
+        imsiResultList.forEach(item -> {
+            imsiMap.put(item.getCommentsSeq(), item);
             if(UtilCommon.isEmpty(item.getParentsCommentsSeq())){
-                resultList.add(zcommentsResponseDto);
+                resultList.add(item);
             }else{
-                imsiMap.get(item.getParentsCommentsSeq()).getChildren().add(zcommentsResponseDto);
+                imsiMap.get(item.getParentsCommentsSeq()).getChildren().add(item);
             }
         });
 
@@ -70,11 +63,8 @@ public class ZcommentsService {
         return map;
     }
 
-
     /**
      * 댓글 등록
-     * @param paramDto
-     * @return
      */
     @Transactional
     public ZcommentsResponseDto commentsCreate(ZcommentsCreateDto paramDto) throws Exception{
@@ -85,8 +75,6 @@ public class ZcommentsService {
 
     /**
      * 댓글 수정
-     * @param paramDto
-     * @return
      */
     @Transactional
     public ZcommentsResponseDto commentsModify(Long boardSeq, ZcommentsModifyDto paramDto) throws Exception{
@@ -97,8 +85,6 @@ public class ZcommentsService {
 
     /**
      * 댓글 삭제
-     * @param commentsSeq
-     * @return
      */
     @Transactional
     public ZcommentsResponseDto commentsDelete(Long commentsSeq) throws Exception{
