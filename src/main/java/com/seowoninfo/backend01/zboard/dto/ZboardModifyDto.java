@@ -1,5 +1,6 @@
 package com.seowoninfo.backend01.zboard.dto;
 
+import com.seowoninfo.backend01.common.validation.enums.YnCode;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

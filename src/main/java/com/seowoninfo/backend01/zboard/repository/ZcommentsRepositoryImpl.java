@@ -23,6 +23,7 @@ public class ZcommentsRepositoryImpl implements ZcommentsRepositoryCustom {
 		List<ZcommentsResponseDto> query = queryFactory.select(
 				Projections.bean(ZcommentsResponseDto.class
 				, zcomments.commentsSeq
+				, zcomments.parentsCommentsSeq
 				, zcomments.comments
 				, zcomments.createdBy
 				, zcomments.createdDttm
