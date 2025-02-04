@@ -7,6 +7,7 @@ import com.seowoninfo.backend01.common.util.UtilMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
 		System.out.println("::::::::::::::::::::::::::::::JwtAccessDeniedHandler(인가실패)::::::::::::::::::::::::::::");
-		GlobalExceptionHandler.filterExceptionHandler(response, ResponseCode.FAIL.code(), utilMessage.getMessage("access.denied", null));
+		GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.FORBIDDEN, ResponseCode.ACCESS_DENIED, utilMessage.getMessage("access.denied", null));
 	}
 }

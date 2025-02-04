@@ -2,6 +2,7 @@ package com.seowoninfo.backend01.zboard.service;
 
 import com.seowoninfo.backend01.common.exception.CustomException;
 import com.seowoninfo.backend01.common.response.PageResponse;
+import com.seowoninfo.backend01.common.response.ResponseCode;
 import com.seowoninfo.backend01.common.util.UtilMessage;
 import com.seowoninfo.backend01.zboard.dto.ZcommentsCreateDto;
 import com.seowoninfo.backend01.zboard.dto.ZcommentsModifyDto;
@@ -68,7 +69,8 @@ public class ZcommentsService {
      */
     @Transactional
     public ZcommentsResponseDto commentsEdit(Long boardSeq, ZcommentsModifyDto paramDto) throws Exception{
-        Zcomments entity = commentsRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.edit.nodata", null)));
+//        Zcomments entity = commentsRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.edit.nodata", null)));
+        Zcomments entity = commentsRepository.findById(boardSeq).orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_GET_NODATA, utilMessage.getMessage("exception.edit.nodata", null)));
         entity.modifyComments(paramDto);
         return ZcommentsResponseDto.toDto(entity);
     }
@@ -80,7 +82,8 @@ public class ZcommentsService {
      */
     @Transactional
     public ZcommentsResponseDto commentsDelete(Long boardSeq) throws Exception{
-        Zcomments entity = commentsRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.delete.nodata", null)));
+//        Zcomments entity = commentsRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.delete.nodata", null)));
+        Zcomments entity = commentsRepository.findById(boardSeq).orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_GET_NODATA, utilMessage.getMessage("exception.delete.nodata", null)));
         commentsRepository.delete(entity);
         return ZcommentsResponseDto.toDto(entity);
     }

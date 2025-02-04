@@ -14,6 +14,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -61,14 +62,14 @@ public class JwtFilter extends OncePerRequestFilter{
 			// 만료시 다음 필터로 넘기지 않고 응답을 내려줌
 			// response status code
 			// response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			GlobalExceptionHandler.filterExceptionHandler(response, ResponseCode.FAIL_TOKEN_EXPIRED.code(), utilMessage.getMessage("jwt.accessToken.expired", null));
+			GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.BAD_REQUEST, ResponseCode.JWT_ACCESSTOKEN_EXPIRED, utilMessage.getMessage("jwt.accessToken.expired", null));
 			return;
 		} catch (MalformedJwtException e) {
-			GlobalExceptionHandler.filterExceptionHandler(response, ResponseCode.FAIL_TOKEN_MALFORMED.code(), utilMessage.getMessage("jwt.accessToken.malformed", null));
+			GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.BAD_REQUEST, ResponseCode.JWT_ACCESSTOKEN_EXPIRED, utilMessage.getMessage("jwt.accessToken.malformed", null));
 			return;
 		} catch (Exception e) {
 			e.printStackTrace();
-			GlobalExceptionHandler.filterExceptionHandler(response, ResponseCode.FAIL_TOKEN_INVALID.code(), utilMessage.getMessage("jwt.accessToken.invalid", null));
+			GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.BAD_REQUEST, ResponseCode.JWT_ACCESSTOKEN_EXPIRED, utilMessage.getMessage("jwt.accessToken.invalid", null));
 			return;
 		}
 		
@@ -77,7 +78,7 @@ public class JwtFilter extends OncePerRequestFilter{
 		if(!category.equals("accessToken")) {
 			// 잘못된 토큰일 경우 다음 필터로 넘기지 않고 응답을 내려줌
 			// response status code
-			GlobalExceptionHandler.filterExceptionHandler(response, ResponseCode.FAIL.code(), utilMessage.getMessage("jwt.accessToken.expired", null));
+			GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.BAD_REQUEST, ResponseCode.JWT_TOKEN_CATEGORY, utilMessage.getMessage("jwt.accessToken.malformed", null));
 			return;
 		}
 		

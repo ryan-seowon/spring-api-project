@@ -163,7 +163,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
      */
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        GlobalExceptionHandler.filterExceptionHandler(response, ResponseCode.FAIL.code(), utilMessage.getMessage("login.fail", null));
+        GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE, ResponseCode.LOGIN_FAIL, utilMessage.getMessage("login.fail", null));
     }
 
 }

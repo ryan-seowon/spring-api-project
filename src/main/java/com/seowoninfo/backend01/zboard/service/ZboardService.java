@@ -3,6 +3,7 @@ package com.seowoninfo.backend01.zboard.service;
 
 import com.seowoninfo.backend01.common.exception.CustomException;
 import com.seowoninfo.backend01.common.response.PageResponse;
+import com.seowoninfo.backend01.common.response.ResponseCode;
 import com.seowoninfo.backend01.common.util.UtilCommon;
 import com.seowoninfo.backend01.common.util.UtilFile;
 import com.seowoninfo.backend01.common.util.UtilMessage;
@@ -70,7 +71,8 @@ public class ZboardService {
 	 * @throws Exception
 	 */
 	public ZboardResponseDto boardDetail(Long boardSeq) throws Exception{
-		Zboard zboard = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.get.nodata", null)));
+//		Zboard zboard = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.get.nodata", null)));
+		Zboard zboard = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_GET_NODATA, utilMessage.getMessage("exception.get.nodata", null)));
 		ZboardResponseDto result = ZboardResponseDto.toDto(zboard);
 
 		// 파일정보추가
@@ -138,7 +140,8 @@ public class ZboardService {
 	 */
 	@Transactional
 	public ZboardResponseDto boardEdit(Long boardSeq, ZboardModifyDto paramDto, MultipartFile[] files) throws Exception{
-		Zboard board = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.edit.nodata", null)));
+//		Zboard board = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.edit.nodata", null)));
+		Zboard board = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_GET_NODATA, utilMessage.getMessage("exception.edit.nodata", null)));
 		board.editZboard(paramDto);
 		
 		// UI상에서 삭제된 파일은 삭제처리해야함
@@ -193,7 +196,8 @@ public class ZboardService {
 	 */
 	@Transactional
 	public ZboardResponseDto boardDelete(Long boardSeq) throws Exception{
-		Zboard entity = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.delete.nodata", null)));
+//		Zboard entity = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.delete.nodata", null)));
+		Zboard entity = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_GET_NODATA, utilMessage.getMessage("exception.delete.nodata", null)));
 		boardRepository.delete(entity);
 		
 		// 파일정보삭제

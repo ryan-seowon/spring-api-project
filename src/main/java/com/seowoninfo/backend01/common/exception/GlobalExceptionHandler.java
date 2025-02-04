@@ -3,6 +3,7 @@ package com.seowoninfo.backend01.common.exception;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seowoninfo.backend01.common.constant.ConstantsStatic;
 import com.seowoninfo.backend01.common.response.ApiResponse;
+import com.seowoninfo.backend01.common.response.ApiResponseFail;
 import com.seowoninfo.backend01.common.response.ResponseCode;
 import com.seowoninfo.backend01.common.util.UtilCommon;
 import com.seowoninfo.backend01.common.util.UtilMessage;
@@ -24,6 +25,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,12 +46,10 @@ public class GlobalExceptionHandler {
 	 * @return
 	 */
 	@ExceptionHandler(value = Exception.class)
-	public ResponseEntity<ApiResponse<?>> exceptionHandler(Exception e) {
+	public ResponseEntity<ApiResponseFail<?>> exceptionHandler(Exception e) {
 		log.debug("GlobalExceptionHandler:Exception");
-		log.debug(e.getMessage());
-		for(StackTraceElement error : e.getStackTrace()) {log.debug(error.toString());}
-		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.error(e.getMessage()));
-//		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.error(utilMessage.getMessage("exception.system", new String[] {"Exception"})));
+		log.error(e.getMessage());
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponseFail.fail(ResponseCode.INTERNAL_SERVER_ERROR, ResponseCode.INTERNAL_SERVER_ERROR.message()));
 	}
 
 	/**
@@ -58,12 +58,10 @@ public class GlobalExceptionHandler {
 	 * @return
 	 */
 	@ExceptionHandler(value = DataAccessException.class)
-	public ResponseEntity<ApiResponse<?>> exceptionHandler(DataAccessException e) {
+	public ResponseEntity<ApiResponseFail<?>> exceptionHandler(DataAccessException e) {
 		log.debug("GlobalExceptionHandler:DataAccessException");
-		log.debug(e.getMessage());
-		for(StackTraceElement error : e.getStackTrace()) {log.debug(error.toString());}
-		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.error(e.getMessage()));
-//		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.error(utilMessage.getMessage("exception.system", new String[] {"DataAccessException"})));
+		log.error(e.getMessage());
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponseFail.fail(ResponseCode.DATA_ACCESS_EXCEPTION, ResponseCode.DATA_ACCESS_EXCEPTION.message()));
 	}
 	
 	/**
@@ -72,12 +70,11 @@ public class GlobalExceptionHandler {
 	 * @return
 	 */
 	@ExceptionHandler(value = SQLException.class)
-	public ResponseEntity<ApiResponse<?>> exceptionHandler(SQLException e) {
+	public ResponseEntity<ApiResponseFail<?>> exceptionHandler(SQLException e) {
 		log.debug("GlobalExceptionHandler:SQLException");
-		log.debug(e.getMessage());
+		log.error(e.getMessage());
 		for(StackTraceElement error : e.getStackTrace()) {log.debug(error.toString());}
-		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.error(e.getMessage()));
-//		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.error(utilMessage.getMessage("exception.system", new String[] {"SQLException"})));
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponseFail.fail(ResponseCode.SQL_EXCEPTION, ResponseCode.SQL_EXCEPTION.message()));
 	}
 	
 	/**
@@ -86,12 +83,10 @@ public class GlobalExceptionHandler {
 	 * @return
 	 */
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class) // HttpRequestMethodNotSupportedException 예외를 잡아서 처리
-	protected ResponseEntity<ApiResponse<?>> exceptionHandler(HttpRequestMethodNotSupportedException e) {
+	protected ResponseEntity<ApiResponseFail<?>> exceptionHandler(HttpRequestMethodNotSupportedException e) {
 		log.debug("GlobalExceptionHandler:HttpRequestMethodNotSupportedException");
-		log.debug(e.getMessage());
-		for(StackTraceElement error : e.getStackTrace()) {log.debug(error.toString());}
-		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.error( e.getMessage()));
-//		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.error(utilMessage.getMessage("exception.system", new String[] {"HttpRequestMethodNotSupportedException"})));
+		log.error(e.getMessage());
+		return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(ApiResponseFail.fail(ResponseCode.METHOD_NOT_SUPPORTED_EXCEPTION, ResponseCode.METHOD_NOT_SUPPORTED_EXCEPTION.message()));
 	}
 	
 	/**
@@ -100,12 +95,10 @@ public class GlobalExceptionHandler {
 	 * @return
 	 */
 	@ExceptionHandler(NoHandlerFoundException.class)
-	protected ResponseEntity<ApiResponse<?>> exceptionHandler(NoHandlerFoundException e) {
+	protected ResponseEntity<ApiResponseFail<?>> exceptionHandler(NoHandlerFoundException e) {
 		log.debug("GlobalExceptionHandler:NoHandlerFoundException");
-		log.debug(e.getMessage());
-		for(StackTraceElement error : e.getStackTrace()) {log.debug(error.toString());}
-		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.error(e.getMessage()));
-//		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.error(utilMessage.getMessage("exception.system", new String[] {"NoHandlerFoundException"})));
+		log.error(e.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponseFail.fail(ResponseCode.NO_HANDLER_FOUND_EXCEPTION, ResponseCode.NO_HANDLER_FOUND_EXCEPTION.message()));
 	}
 	
 	/**
@@ -116,13 +109,13 @@ public class GlobalExceptionHandler {
 	 * @return
 	 */
 	@ExceptionHandler(value = CustomException.class)
-	public ResponseEntity<ApiResponse<?>> exceptionHandler(CustomException e) {
+	public ResponseEntity<ApiResponseFail<?>> exceptionHandler(CustomException e) {
 		log.debug("GlobalExceptionHandler:CustomException");
-		log.debug(e.getMessage());
+		log.debug("e.getMessage() = " + e.getMessage());
+		log.debug("responseCode.code = " + e.getResponseCode().code());
+		log.debug("responseCode.message = " + e.getResponseCode().message());
 		for(StackTraceElement error : e.getStackTrace()) {log.debug(error.toString());}
-		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.error(e.getMessage()));
-//		return ResponseEntity.status(e.getHttpStatusCode()).body(ApiResponse.error(sb.toString()));
-//		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.error(utilMessage.getMessage("exception.system", new String[] {"CustomException"})));
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponseFail.fail(e.getResponseCode(), e.getMessage()));
 	}
 	
 	/**
@@ -131,32 +124,41 @@ public class GlobalExceptionHandler {
 	 * @return
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ApiResponse<Map<String, String>>> exceptionHandler(final MethodArgumentNotValidException e) {
+	public ResponseEntity<ApiResponseFail<?>> exceptionHandler(final MethodArgumentNotValidException e) {
 		log.debug("GlobalExceptionHandler:MethodArgumentNotValidException");
 		log.debug(e.getMessage());
 		// @valid 어토테이션과 dto의 제약으로 발생된 오류
-		Map<String, String> errors = new HashMap<String, String>();
+		Map<String, Object> errors = new HashMap<String, Object>();
 		e.getBindingResult().getAllErrors().forEach((error)-> {
 			errors.put(((FieldError) error).getField(), error.getDefaultMessage());
 		});
-		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.error(null, ResponseCode.FAIL.message(), errors));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponseFail.fail(ResponseCode.METHOD_ARGUMENT_NOT_VALID_EXCEPTION, errors, utilMessage.getMessage("exception.valid.anotation", null)));
+//		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.error(null, ResponseCode.FAIL.message(), errors));
 	}
 	
 	// 필터등에서 exception이 발생할 경우 advice 범위 밖이라 여기로 안들어옴. 데이타 가공 
-	public static void filterExceptionHandler(HttpServletResponse response, String responseCode, String message) {
+	public static void filterExceptionHandler(HttpServletResponse response, HttpStatus httpStatus, ResponseCode responseCode, String message) {
 		log.debug("GlobalExceptionHandler:filterExceptionHandler");
-		response.setStatus(HttpStatus.OK.value());
+		response.setStatus(httpStatus.value());
 		response.setContentType("application/json;charset=UTF-8");
 		try {
-			
+
+//			ResponseCode responseCode = Arrays.stream(ResponseCode.values())
+//					.filter(status -> status.code() == httpStatus.value())
+//					.findFirst()
+//					.orElse(ResponseCode.INTERNAL_SERVER_ERROR);
+
+//			ResponseCode responseCode = ResponseCode.of(httpStatus.value());
+
 			Map<String, Object> responseBody = new HashMap<String, Object>();
-			responseBody.put("status", UtilCommon.isEmpty(responseCode) ? ResponseCode.FAIL.code() : responseCode);
+			responseBody.put("errorCode", responseCode.code());
+
 			responseBody.put("message", message);
-			responseBody.put("data", null);
-			responseBody.put("error", null);
 			responseBody.put("locale", LocaleContextHolder.getLocale());
 			responseBody.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern(ConstantsStatic.format_datetime)));
-			
+
+
+			responseBody.put("error", null);
 			PrintWriter writer = response.getWriter();
 			writer.write(new ObjectMapper().writeValueAsString(responseBody));
 			writer.flush();
@@ -170,6 +172,7 @@ public class GlobalExceptionHandler {
 //			responseBody.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SS")));
 //			response.getWriter().write(responseBody.toJSONString());
 		} catch (Exception e) {
+			e.printStackTrace();
 			log.error(e.getMessage());
 		}
 	}

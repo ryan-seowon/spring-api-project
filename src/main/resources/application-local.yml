@@ -60,7 +60,7 @@ spring:
 #    secret: ENC(hJ0Cz5WwGJnVpetEu6sYu62TBFKlL7weWH6aBeNBw67J9r8A26PbZKjt0t4e3FR7XxnAPzEAsplO94X49yjLR2gxuOMWYIN+)   # 토큰 암호화 보안키
     secret: ThisIsSeowonFrameworkAndThisFrameworkIsBorn20250116By3   # 토큰 암호화 보안키
     access:
-      expiration: 5000	# access토큰 만료시간( )second)
+      expiration: 6000	# access토큰 만료시간( )second)
     refresh:
       expiration: 86400	# refresh토큰 만료시간(second)
 

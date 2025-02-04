@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
 		log.debug("::::::::::::::::::::::::::::::JwtAuthenticationEntryPoint(인증실패)::::::::::::::::::::::::::::");
 		log.debug(request.getRequestURL().toString());
-		GlobalExceptionHandler.filterExceptionHandler(response, ResponseCode.FAIL_TOKEN_EXPIRED.code(), utilMessage.getMessage("authentication.denied", null));
+		GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.UNAUTHORIZED, ResponseCode.AUTHENTICATION_DENIED, utilMessage.getMessage("authentication.denied", null));
 	}
 }
