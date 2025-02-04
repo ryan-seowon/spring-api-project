@@ -32,7 +32,9 @@ public class ZcommentsRepositoryImpl implements ZcommentsRepositoryCustom {
 			))
 			.from(zcomments)
 			.where(zcomments.board.boardSeq.eq(boardSeq))
-			.orderBy(zcomments.commentsSeq.desc())
+			.orderBy(
+					zcomments.parentsCommentsSeq.asc().nullsFirst()
+					, zcomments.commentsSeq.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();

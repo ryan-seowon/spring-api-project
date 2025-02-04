@@ -3,6 +3,7 @@ package com.seowoninfo.backend01.zboard.service;
 import com.seowoninfo.backend01.common.exception.CustomException;
 import com.seowoninfo.backend01.common.response.PageResponse;
 import com.seowoninfo.backend01.common.response.ResponseCode;
+import com.seowoninfo.backend01.common.util.UtilCommon;
 import com.seowoninfo.backend01.common.util.UtilMessage;
 import com.seowoninfo.backend01.zboard.dto.ZboardResponseDto;
 import com.seowoninfo.backend01.zboard.dto.ZcommentsCreateDto;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +49,22 @@ public class ZcommentsService {
      */
     public Map<String, Object> commentsList(Long boardSeq, Pageable pageable) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
+        List<ZcommentsResponseDto> resultList = new ArrayList<>();
+        Map<Long, ZcommentsResponseDto> imsiMap = new HashMap<>();
+
+        // 댓글 부모 밑에 자식 붙이기
         Page<ZcommentsResponseDto> page = commentsRepository.findCommentsAll(boardSeq, pageable);
-        List<ZcommentsResponseDto> resultList = page.getContent();
+        List<ZcommentsResponseDto> imsiResultList = page.getContent();
+        imsiResultList.stream().forEach(item -> {
+            ZcommentsResponseDto zcommentsResponseDto = item;
+            imsiMap.put(item.getCommentsSeq(), zcommentsResponseDto);
+            if(UtilCommon.isEmpty(item.getParentsCommentsSeq())){
+                resultList.add(zcommentsResponseDto);
+            }else{
+                imsiMap.get(item.getParentsCommentsSeq()).getChildren().add(zcommentsResponseDto);
+            }
+        });
+
         map.put("pageInfo", PageResponse.pageInfo(page));
         map.put("resultList", resultList);
         return map;

@@ -4,6 +4,8 @@ import com.seowoninfo.backend01.zboard.entity.Zcomments;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 댓글
@@ -25,7 +27,8 @@ public class ZcommentsResponseDto {
 	private LocalDateTime createdDttm;
 	private String modifiedBy;
 	private LocalDateTime modifiedDttm;
-	
+	private List<ZcommentsResponseDto> children = new ArrayList<>();	// 자식댓글
+
 	// Entity -> DTO 로 변환
 	public static ZcommentsResponseDto toDto(Zcomments item) {
 		return ZcommentsResponseDto.builder()
