@@ -66,10 +66,10 @@ public class ZboardController {
 
     @Operation(summary = "게시판 수정", description = "게시판을 수정한다")
     @PatchMapping(value = "/{boardSeq}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<JSONObject> boardEdit(@PathVariable Long boardSeq,
+    public ApiResponse<JSONObject> boardModify(@PathVariable Long boardSeq,
                                               @Valid @RequestPart(name = "paramDto") ZboardModifyDto paramDto,
                                               @RequestPart(name = "files", required = false) MultipartFile[] files) throws Exception{
-        ZboardResponseDto result = boardService.boardEdit(boardSeq, paramDto, files);
+        ZboardResponseDto result = boardService.boardModify(boardSeq, paramDto, files);
 
         JSONObject json = new JSONObject();
         json.put("result", result);

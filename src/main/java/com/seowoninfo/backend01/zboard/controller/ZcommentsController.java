@@ -55,13 +55,13 @@ public class ZcommentsController {
 
     @Operation(summary = "댓글 수정", description = "댓글을 수정한다")
     @PatchMapping("/{commentsSeq}")
-    public ApiResponse<JSONObject> scommentsEdit(@PathVariable Long commentsSeq, @RequestBody ZcommentsModifyDto paramDto) throws Exception{
-        ZcommentsResponseDto result = zcommentsService.commentsEdit(commentsSeq, paramDto);
+    public ApiResponse<JSONObject> scommentsModify(@PathVariable Long commentsSeq, @RequestBody ZcommentsModifyDto paramDto) throws Exception{
+        ZcommentsResponseDto result = zcommentsService.commentsModify(commentsSeq, paramDto);
 
         JSONObject json = new JSONObject();
         json.put("result", result);
 
-        return ApiResponse.success();
+        return ApiResponse.success(json);
     }
 
     @Operation(summary = "댓글 삭제", description = "댓글을 삭제한다")

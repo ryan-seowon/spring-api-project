@@ -139,10 +139,9 @@ public class ZboardService {
 	 * @return
 	 */
 	@Transactional
-	public ZboardResponseDto boardEdit(Long boardSeq, ZboardModifyDto paramDto, MultipartFile[] files) throws Exception{
-//		Zboard board = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.edit.nodata", null)));
-		Zboard board = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_GET_NODATA, utilMessage.getMessage("exception.edit.nodata", null)));
-		board.editZboard(paramDto);
+	public ZboardResponseDto boardModify(Long boardSeq, ZboardModifyDto paramDto, MultipartFile[] files) throws Exception{
+		Zboard board = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_GET_NODATA, utilMessage.getMessage("exception.modify.nodata", null)));
+		board.modifyZboard(paramDto);
 		
 		// UI상에서 삭제된 파일은 삭제처리해야함
 		// 파일정보삭제

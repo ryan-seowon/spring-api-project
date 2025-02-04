@@ -50,10 +50,11 @@ public class Zcomments extends Base {
 	private Zboard board;
 
 	// DTO -> Entity 로 변환
-	public static Zcomments toEntity(ZcommentsCreateDto item) {
+	public static Zcomments toEntity(ZcommentsCreateDto item, Zboard board) {
 		return Zcomments.builder()
 				.parentsCommentsSeq(item.getParentsCommentsSeq())
 				.comments(item.getComments())
+				.board(board)
 				.build();
 	}
 	

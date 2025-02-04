@@ -30,6 +30,7 @@ public class ZcommentsResponseDto {
 	public static ZcommentsResponseDto toDto(Zcomments item) {
 		return ZcommentsResponseDto.builder()
 				.commentsSeq(item.getCommentsSeq())
+				.boardSeq(item.getBoard().getBoardSeq())
 				.parentsCommentsSeq(item.getParentsCommentsSeq())
 				.comments(item.getComments())
 				.deletedYn(item.getDeletedYn())

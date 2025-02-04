@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface ZboardRepository extends JpaRepository<Zboard, Long>, ZboardRepositoryCustom {
 
+    Zboard findByBoardSeq(Long id);
+
 }

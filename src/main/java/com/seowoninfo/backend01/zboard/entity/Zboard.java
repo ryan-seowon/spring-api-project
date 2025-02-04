@@ -75,14 +75,14 @@ public class Zboard extends Base {
     }
 
     // 수정
-    public void editZboard(ZboardModifyDto item) {
+    public void modifyZboard(ZboardModifyDto item) {
         this.boardTitle = item.getBoardTitle();
         this.boardContents = item.getBoardContents();
         this.priorityYn = item.getPriorityYn();
     }
 
     // 조회수추가
-    public void editViewCount(Long boardSLong) {
+    public void modifyViewCount(Long boardSLong) {
         this.viewCount = this.viewCount++;
     }
 }
