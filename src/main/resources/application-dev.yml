@@ -1,15 +1,12 @@
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-#    url: ENC(q2SDPaxej97qHhpPgyAObn71Dty7ceCSNGY9Hzj9uXtWXapEM7gUcjTKJmkRfh6S)
-#    username: ENC(TvqDHtyojU+ktwRnpK/5Vw==)
-#    password: ENC(V3Nxvb3V2AuagwrYW+wfkA==)
-#    url: jdbc:mariadb://61.251.164.178:3306/seowon
-#    username: seowon
-#    password: seowon
-    url: jdbc:mariadb://localhost:3306/sportal
-    username: sportal
-    password: sportal
+#    url: ENC(wVayMmAiKVg3djKuF0H2YiyladonOax3uCg33FVubVXzyL40MpZ7cm3BRRFlsjPL++CNivoIrzI=)
+#    username: ENC(E4XynfZE11brJf8OvQGsvQ==)
+#    password: ENC(sTbPOAM+Upxrk9lBcfuH2A==)
+    url: jdbc:mariadb://61.251.164.178:3306/seowon
+    username: seowon
+    password: seowon
 
   jpa:
     open-in-view: false
@@ -42,8 +39,8 @@ spring:
 #        pattern:
 
   jwt:
-#    secret: ENC(hJ0Cz5WwGJnVpetEu6sYu62TBFKlL7weWH6aBeNBw67J9r8A26PbZKjt0t4e3FR7XxnAPzEAsplO94X49yjLR2gxuOMWYIN+)   # 토큰 암호화 보안키
-    secret: ThisIsSilsFrameworkAndThisFrameworkIsBorn20241114BySangsil   # 토큰 암호화 보안키
+    secret: ENC(p+UGISqjN1rTvSRsmxNLIM4v1EELgzL6Lw7H4+LCJT7q5zIdLcohcX8xUjycwcH7PGcZi3lpfuZBzt8elTwJMQ4hzhsAwf1r)   # 토큰 암호화 보안키
+    #    secret: ThisIsSeowonFrameworkAndThisFrameworkIsBorn20250101ByDev3   # 토큰 암호화 보안키
     access:
       expiration: 5	# access토큰 만료시간( )second)
     refresh:

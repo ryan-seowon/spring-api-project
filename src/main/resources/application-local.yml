@@ -57,8 +57,8 @@ spring:
 #        pattern:
 
   jwt:
-#    secret: ENC(hJ0Cz5WwGJnVpetEu6sYu62TBFKlL7weWH6aBeNBw67J9r8A26PbZKjt0t4e3FR7XxnAPzEAsplO94X49yjLR2gxuOMWYIN+)   # 토큰 암호화 보안키
-    secret: ThisIsSeowonFrameworkAndThisFrameworkIsBorn20250116By3   # 토큰 암호화 보안키
+    secret: ENC(p+UGISqjN1rTvSRsmxNLIM4v1EELgzL6Lw7H4+LCJT7q5zIdLcohcX8xUjycwcH7PGcZi3lpfuZBzt8elTwJMQ4hzhsAwf1r)   # 토큰 암호화 보안키
+#    secret: ThisIsSeowonFrameworkAndThisFrameworkIsBorn20250101ByDev3   # 토큰 암호화 보안키
     access:
       expiration: 6000	# access토큰 만료시간( )second)
     refresh:
