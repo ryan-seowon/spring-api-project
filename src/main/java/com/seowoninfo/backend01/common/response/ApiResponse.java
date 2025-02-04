@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 컨트롤러의 성공 응답구조
+ * 성공 응답구조
  * @param <T>
  */
 @Getter

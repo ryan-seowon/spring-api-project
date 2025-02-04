@@ -100,19 +100,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
      */
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-// 싱글토큰방식 안쓸거야
-//		CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal();
-//		String memberId = customUserDetails.getUsername();	// 아이디
-//
-//		// role
-//		Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
-//		Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-//		GrantedAuthority auth = iterator.next();
-//		String role = auth.getAuthority();
-//
-//		String token = jwtUtil.createJwt(memberId, role, 60*60*10L);
-//		response.addHeader("Authorization", "Bearer " + token);
-
         // 유저정보
         String memberId = authResult.getName();
 

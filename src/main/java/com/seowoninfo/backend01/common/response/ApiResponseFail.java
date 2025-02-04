@@ -12,7 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * 컨트롤러의 모든 응답구조
+ * 실패 응답구조
  * @param <T>
  */
 @Getter

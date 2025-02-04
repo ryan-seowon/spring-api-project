@@ -60,8 +60,6 @@ public class JwtFilter extends OncePerRequestFilter{
 			jwtUtil.isExpired(accessToken);
 		} catch (ExpiredJwtException e) {
 			// 만료시 다음 필터로 넘기지 않고 응답을 내려줌
-			// response status code
-			// response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.BAD_REQUEST, ResponseCode.JWT_ACCESSTOKEN_EXPIRED, utilMessage.getMessage("jwt.accessToken.expired", null));
 			return;
 		} catch (MalformedJwtException e) {

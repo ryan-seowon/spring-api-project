@@ -2,10 +2,8 @@ package com.seowoninfo.backend01.common.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seowoninfo.backend01.common.constant.ConstantsStatic;
-import com.seowoninfo.backend01.common.response.ApiResponse;
 import com.seowoninfo.backend01.common.response.ApiResponseFail;
 import com.seowoninfo.backend01.common.response.ResponseCode;
-import com.seowoninfo.backend01.common.util.UtilCommon;
 import com.seowoninfo.backend01.common.util.UtilMessage;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +23,6 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -133,7 +130,6 @@ public class GlobalExceptionHandler {
 			errors.put(((FieldError) error).getField(), error.getDefaultMessage());
 		});
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponseFail.fail(ResponseCode.METHOD_ARGUMENT_NOT_VALID_EXCEPTION, errors, utilMessage.getMessage("exception.valid.anotation", null)));
-//		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.error(null, ResponseCode.FAIL.message(), errors));
 	}
 	
 	// 필터등에서 exception이 발생할 경우 advice 범위 밖이라 여기로 안들어옴. 데이타 가공 
@@ -142,14 +138,6 @@ public class GlobalExceptionHandler {
 		response.setStatus(httpStatus.value());
 		response.setContentType("application/json;charset=UTF-8");
 		try {
-
-//			ResponseCode responseCode = Arrays.stream(ResponseCode.values())
-//					.filter(status -> status.code() == httpStatus.value())
-//					.findFirst()
-//					.orElse(ResponseCode.INTERNAL_SERVER_ERROR);
-
-//			ResponseCode responseCode = ResponseCode.of(httpStatus.value());
-
 			Map<String, Object> responseBody = new HashMap<String, Object>();
 			responseBody.put("errorCode", responseCode.code());
 
@@ -163,16 +151,7 @@ public class GlobalExceptionHandler {
 			writer.write(new ObjectMapper().writeValueAsString(responseBody));
 			writer.flush();
 			writer.close();
-			
-//			JSONObject responseBody = new JSONObject();
-//			responseBody.put("status", UtilCommon.isEmpty(responseCode) ? ResponseCode.FAIL.code() : responseCode);
-//			responseBody.put("message", message);
-//			responseBody.put("data", null);
-//			responseBody.put("locale", LocaleContextHolder.getLocale());
-//			responseBody.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SS")));
-//			response.getWriter().write(responseBody.toJSONString());
 		} catch (Exception e) {
-			e.printStackTrace();
 			log.error(e.getMessage());
 		}
 	}

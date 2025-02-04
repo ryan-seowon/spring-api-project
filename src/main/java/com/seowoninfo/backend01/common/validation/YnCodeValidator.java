@@ -2,6 +2,10 @@ package com.seowoninfo.backend01.common.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.hibernate.type.descriptor.sql.internal.Scale6IntervalSecondDdlType;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * FileName    : IntelliJ IDEA

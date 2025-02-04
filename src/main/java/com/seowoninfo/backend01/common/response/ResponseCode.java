@@ -4,7 +4,7 @@ package com.seowoninfo.backend01.common.response;
  * 응답코드
  */
 public enum ResponseCode {
-	SUCCESS("200", "성공")
+	SUCCESS("0000", "성공")
 	, FAIL("9999", "실패")
 
 	, INTERNAL_SERVER_ERROR("1001", "서버에러")
