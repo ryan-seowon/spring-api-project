@@ -1,5 +1,5 @@
 # 프로젝트정보
-
+ > Rest Api 방식
 ### 버전및구성 정보
 
 * 프레임워크: Springboot 3.4.1
@@ -20,4 +20,67 @@
 * JPA 스파이쿼리: P6spyConfig
 
 
-### 규약
+### 응답구조
+#### * 성공 (Status Code: 200)
+````
+ {
+    "header": {
+        "message": "성공",
+        "locale": "ko",
+        "timestamp": "2025-02-05 13:28:17.06"
+    },
+    "data": {
+        "pageInfo": {
+            "totalElements": 22,
+            "size": 1,
+            "totalPages": 22,
+            "number": 0,
+            "numberOfElements": 1,
+            "first": true,
+            "last": false,
+            "empty": false,
+            "sort": {
+                "empty": false,
+                "sorted": true,
+                "unsorted": false
+            }
+        },
+        "resultList": [
+            {
+            "boardSeq": 1,
+            "boardTitle": "오리지지지",
+            "boardContents": "나러ㅏㅁ너라ㅣㅁㄴㅇㄹ",
+            "viewCount": 0,
+            "priorityYn": "Y",
+            "deletedYn": "N",
+            "createdBy": null,
+            "createdDttm": "2025-01-23 22:10:21.60",
+            "modifiedBy": "sil1",
+            "modifiedDttm": "2025-02-05 13:15:53.40",
+            "commentCount": 6,
+            "fileCount": 1,
+            "files": null
+            }
+        ]
+    }
+}
+````
+#### * 실패 (Status Code: 200이 아닌 모든것)
+
+````
+{
+  "errorCode": "1006",
+  "header": {
+    "message": "필드 유효성 검증 실패입니다..",
+    "locale": "ko",
+    "timestamp": "2025-02-05 13:32:57.35"
+  },
+  "error": {
+    "priorityYn": "[Y2K]허용되지 않은 값입니다."
+  }
+}
+````
+
+#### * 로컬적용
+> * [SWAGGER](http://localhost:8080/swagger-ui/index.html)
+> * H2 db 사용가능
