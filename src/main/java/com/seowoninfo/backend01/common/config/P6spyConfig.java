@@ -9,14 +9,12 @@ import org.springframework.context.annotation.Configuration;
  * spy 쿼리 포맷 관리 적용방법
 	1. pom
 		<!-- 스파이로그 -->
-		<!-- https://mvnrepository.com/artifact/p6spy/p6spy -->
 		<dependency>
 			<groupId>p6spy</groupId>
 			<artifactId>p6spy</artifactId>
 			<version>3.9.1</version>
 		</dependency>
 		<!-- 스프링 부트와 P6Spy 간의 자동 구성을 지원-->
-		<!-- https://mvnrepository.com/artifact/com.github.gavlyukovskiy/p6spy-spring-boot-starter -->
 		<dependency>
 			<groupId>com.github.gavlyukovskiy</groupId>
 			<artifactId>p6spy-spring-boot-starter</artifactId>

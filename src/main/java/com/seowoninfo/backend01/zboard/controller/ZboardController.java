@@ -40,7 +40,7 @@ public class ZboardController {
     @GetMapping("")
     public ApiResponse<Map<String, Object>> boardList(
             ZboardSearchDto paramDto
-            , @PageableDefault(size = 10, sort = "priorityYn", direction = Sort.Direction.DESC) Pageable pageable) throws Exception{
+            , @PageableDefault(sort = "priorityYn", direction = Sort.Direction.DESC) Pageable pageable) throws Exception{
         return ApiResponse.success(boardService.boardList(paramDto, pageable));
     }
 

@@ -50,8 +50,8 @@ public class ZboardService {
 	/**
 	 * 게시판리스트
 	 */
-	public Map<String, Object> boardList(ZboardSearchDto paramDto, Pageable pageable) throws Exception {
-		Map<String, Object> map = new HashMap<String, Object>();
+	public Map<String, Object> boardList(ZboardSearchDto paramDto, Pageable pageable) {
+		Map<String, Object> map = new HashMap<>();
 		Page<ZboardResponseDto> page = boardRepository.findBoardAll(paramDto, pageable);
 		List<ZboardResponseDto> resultList = page.getContent();
 		map.put("pageInfo", PageResponse.pageInfo(page));
@@ -62,18 +62,16 @@ public class ZboardService {
 	/**
 	 * 게시판상세
 	 */
-	public ZboardResponseDto boardDetail(Long boardSeq) throws Exception{
+	public ZboardResponseDto boardDetail(Long boardSeq) {
 //		Zboard zboard = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.get.nodata", null)));
 		Zboard zboard = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_GET_NODATA, utilMessage.getMessage("exception.get.nodata", null)));
 		ZboardResponseDto result = ZboardResponseDto.toDto(zboard);
 
 		// 파일정보추가
 		List<ZfileResponseDto> 	files = new ArrayList<>();
-		zboard.getFiles().forEach(file -> {
-			files.add(ZfileResponseDto.toDto(file));
-		});
+		zboard.getFiles().forEach(file -> files.add(ZfileResponseDto.toDto(file)));
 		result.setFiles(files);
-		result.setFileCount(Long.valueOf(files.size()));
+		result.setFileCount((long) files.size());
 
 		return result;
 	}
@@ -91,18 +89,16 @@ public class ZboardService {
 		// 파일업로드
 		if(UtilCommon.isNotEmpty(paramFiles)) {
 			ZfileCreateDto fileDto;
-			String ext = "";
-			StringBuffer systemFileName;
+			StringBuilder systemFileName;
 			for(MultipartFile file : paramFiles) {
-				log.debug("upload file: {}", file.getOriginalFilename());
-				ext = FilenameUtils.getExtension(file.getOriginalFilename());
+//				log.debug("upload file: {}", file.getOriginalFilename());
 
-				systemFileName = new StringBuffer();
+				systemFileName = new StringBuilder();
 				systemFileName.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern(FORMAT_DATESTR)));
 				systemFileName.append("_");
-				systemFileName.append(UUID.randomUUID().toString());
+				systemFileName.append(UUID.randomUUID());
 				systemFileName.append(".");
-				systemFileName.append(ext);
+				systemFileName.append(FilenameUtils.getExtension(file.getOriginalFilename()));
 
 				fileDto = new ZfileCreateDto();
 				fileDto.setUploadPath(FILE_BOARD_PATH);
@@ -114,7 +110,7 @@ public class ZboardService {
 
 				// 물리 파일저장
 				UtilFile.makeFolders(FILE_BOARD_DIR + FILE_BOARD_PATH);
-				String filePath = FILE_BOARD_DIR + FILE_BOARD_PATH + File.separator + systemFileName.toString();
+				String filePath = FILE_BOARD_DIR + FILE_BOARD_PATH + File.separator + systemFileName;
 				log.info("upload file: {}", filePath);
 				file.transferTo(new File(filePath));
 			}
@@ -133,30 +129,33 @@ public class ZboardService {
 		
 		// UI상에서 삭제된 파일은 삭제처리해야함
 		// 파일정보삭제
-		for(Long item : paramDto.getFileSeqs()) {
-			Zfile file = fileRepository.getReferenceById(item);
-			fileRepository.delete(file);
-			
-			// 실제파일삭제
-			Path filePath = Paths.get(FILE_BOARD_DIR + file.getUploadPath() + File.separator + file.getSysFileName());
-			Files.deleteIfExists(filePath);
+		if(UtilCommon.isNotEmpty(paramDto.getFileSeqs())) {
+			for(Long item : paramDto.getFileSeqs()) {
+				Optional<Zfile> zfileOptional = fileRepository.findById(item);
+				if(zfileOptional.isPresent()){
+					Zfile file = zfileOptional.get();
+					fileRepository.delete(file);
+
+					// 실제파일삭제
+					Path filePath = Paths.get(FILE_BOARD_DIR + file.getUploadPath() + File.separator + file.getSysFileName());
+					Files.deleteIfExists(filePath);
+				}
+			}
 		}
-		
+
 		// 파일업로드
 		if(UtilCommon.isNotEmpty(files)) {
 			ZfileCreateDto fileDto;
-			String ext = "";
-			StringBuffer systemFileName;
+			StringBuilder systemFileName;
 			for(MultipartFile file : files) {
 				log.debug("upload file: {}", file.getOriginalFilename());
-				ext = FilenameUtils.getExtension(file.getOriginalFilename());
 				
-				systemFileName = new StringBuffer();
+				systemFileName = new StringBuilder();
 				systemFileName.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern(FORMAT_DATESTR)));
 				systemFileName.append("_");
-				systemFileName.append(UUID.randomUUID().toString());
+				systemFileName.append(UUID.randomUUID());
 				systemFileName.append(".");
-				systemFileName.append(ext);
+				systemFileName.append(FilenameUtils.getExtension(file.getOriginalFilename()));
 				
 				fileDto = new ZfileCreateDto();
 				fileDto.setUploadPath(FILE_BOARD_PATH);
@@ -168,7 +167,7 @@ public class ZboardService {
 				
 				// 물리 파일저장
 				UtilFile.makeFolders(FILE_BOARD_DIR + FILE_BOARD_PATH);
-				String filePath = FILE_BOARD_DIR + FILE_BOARD_PATH + File.separator + systemFileName.toString();
+				String filePath = FILE_BOARD_DIR + FILE_BOARD_PATH + File.separator + systemFileName;
 				file.transferTo(new File(filePath));
 			}
 		}
@@ -180,22 +179,9 @@ public class ZboardService {
 	 * 게시판 삭제
 	 */
 	@Transactional
-	public ZboardResponseDto boardDelete(Long boardSeq) throws Exception{
-//		Zboard entity = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.delete.nodata", null)));
+	public ZboardResponseDto boardDelete(Long boardSeq) {
 		Zboard entity = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_GET_NODATA, utilMessage.getMessage("exception.delete.nodata", null)));
 		boardRepository.delete(entity);
-		
-		// 파일정보삭제
-//		List<ZfileResponseDto> zfileResponseDtoList = fileRepository.findAllByBoardSeq(boardSeq).stream().map(item -> ZfileResponseDto.toDto(item)).collect(Collectors.toList());
-//		if(UtilCommon.isNotEmpty(zfileResponseDtoList)) {
-//			fileRepository.deleteAllByBoardSeq(boardSeq);
-//			// 실제파일삭제
-//			for(ZfileResponseDto item : zfileResponseDtoList) {
-//				Path filePath = Paths.get(FILE_PATH + item.getUploadPath() + File.separator + item.getSysFileName());
-//				Files.deleteIfExists(filePath);
-//			}
-//		}
-		
 		return ZboardResponseDto.toDto(entity);
 	}
 

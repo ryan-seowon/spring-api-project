@@ -36,8 +36,8 @@ public class ZcommentsController {
     @Operation(summary = "댓글 리스트", description = "댓글 리스트")
     @GetMapping("/")
     public ApiResponse<Map<String, Object>> commentsList(
-            @RequestParam(value = "boardSeq", required = true) Long boardSeq
-            , @PageableDefault(size = 10, sort = "commentsSeq", direction = Sort.Direction.DESC)Pageable pageable) throws Exception{
+            @RequestParam(value = "boardSeq") Long boardSeq
+            , @PageableDefault(sort = "commentsSeq", direction = Sort.Direction.DESC)Pageable pageable) throws Exception{
         return ApiResponse.success(zcommentsService.commentsList(boardSeq, pageable));
     }
 

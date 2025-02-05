@@ -14,7 +14,6 @@ import com.seowoninfo.backend01.token.dto.TokenCreateDto;
 import com.seowoninfo.backend01.token.entity.Token;
 import com.seowoninfo.backend01.token.repository.TokenRepository;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -48,8 +47,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final ObjectMapper objectMapper;
     private final UtilMessage utilMessage;
 
-    private Long JWT_ACCESS_EXPIRATION = Long.valueOf(UtilProperty.getProperty("spring.jwt.access.expiration"));
-    private Long JWT_REFRESH_EXPIRATION = Long.valueOf(UtilProperty.getProperty("spring.jwt.refresh.expiration"));
+    private final Long JWT_ACCESS_EXPIRATION = Long.valueOf(UtilProperty.getProperty("spring.jwt.access.expiration"));
+    private final Long JWT_REFRESH_EXPIRATION = Long.valueOf(UtilProperty.getProperty("spring.jwt.refresh.expiration"));
 
     public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, TokenRepository tokenRepository, ObjectMapper objectMapper, UtilMessage utilMessage) {
         this.authenticationManager = authenticationManager;
@@ -73,16 +72,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             MemberLoginDto loginDto = objectMapper.readValue(StreamUtils.copyToString(request.getInputStream(), StandardCharsets.UTF_8), MemberLoginDto.class);
             memberId = loginDto.getMemberId();
             password = loginDto.getPassword();
-            log.debug("로그인정보:{}", loginDto.toString());
+            log.debug("로그인정보:{}", loginDto);
         } catch (JsonMappingException e) {
             log.error("이건 언제터지지(JsonMappingException)");
-            e.printStackTrace();
         } catch (JsonProcessingException e) {
             log.error("이건 언제터지지(JsonProcessingException)");
-            e.printStackTrace();
         } catch (IOException e) {
             log.error("이건 언제터지지(IOException)");
-            e.printStackTrace();
         }
 
 
@@ -99,7 +95,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
      * 로그인 성공시실행하는 메서드(여기서 JWT를 발급하면 됨)
      */
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         // 유저정보
         String memberId = authResult.getName();
 
@@ -131,7 +127,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json;charset=UTF-8");
 
-        Map<String, Object> responseBody = new HashMap<String, Object>();
+        Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("status", ResponseCode.SUCCESS.code());
         responseBody.put("message", utilMessage.getMessage("login.success", null));
         responseBody.put("data", null);
@@ -149,7 +145,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
      * 로그인 실패시 실행하는 메서드
      */
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
         GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE, ResponseCode.LOGIN_FAIL, utilMessage.getMessage("login.fail", null));
     }
 

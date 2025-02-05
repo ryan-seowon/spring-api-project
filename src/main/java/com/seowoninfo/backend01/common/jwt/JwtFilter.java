@@ -14,6 +14,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter{
 	 * 토큰 검증
 	 */
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+	protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
 		
 		// 헤더에서 access키에 담긴 토큰을 꺼냄
 		String accessToken = request.getHeader("accessToken");
@@ -47,7 +48,7 @@ public class JwtFilter extends OncePerRequestFilter{
 			filterChain.doFilter(request, response);
 			return;
 		}
-		log.debug("accessToken:" + accessToken);
+		log.debug("accessToken:{}", accessToken);
 
 		// Bearer 제거
 		if(accessToken.startsWith("Bearer ")) {
@@ -66,7 +67,7 @@ public class JwtFilter extends OncePerRequestFilter{
 			GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.BAD_REQUEST, ResponseCode.JWT_ACCESSTOKEN_EXPIRED, utilMessage.getMessage("jwt.accessToken.malformed", null));
 			return;
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 			GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.BAD_REQUEST, ResponseCode.JWT_ACCESSTOKEN_EXPIRED, utilMessage.getMessage("jwt.accessToken.invalid", null));
 			return;
 		}

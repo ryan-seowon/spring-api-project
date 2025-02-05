@@ -2,7 +2,6 @@ package com.seowoninfo.backend01.common.exception;
 
 import com.seowoninfo.backend01.common.response.ResponseCode;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 /**
  * 커스텀 익셉션

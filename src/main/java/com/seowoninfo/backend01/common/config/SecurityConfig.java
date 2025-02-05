@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seowoninfo.backend01.common.jwt.*;
 import com.seowoninfo.backend01.common.util.UtilMessage;
 import com.seowoninfo.backend01.token.repository.TokenRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,13 +12,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Collections;
 
@@ -40,9 +39,6 @@ public class SecurityConfig {
 
 	/**
 	 * AuthenticationManager 를 반환
-	 * @param configuration
-	 * @return
-	 * @throws Exception
 	 */
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception{
@@ -51,7 +47,6 @@ public class SecurityConfig {
 
 	/**
 	 * 비밀번호암호화
-	 * @return
 	 */
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -64,32 +59,28 @@ public class SecurityConfig {
 		// cors 설정
 		http
 			.cors((cors) -> cors
-					.configurationSource(new CorsConfigurationSource() {
-						
-						@Override
-						public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-							CorsConfiguration configuration = new CorsConfiguration();
-							configuration.setAllowedOrigins(Collections.singletonList(HOST_FRONT));	// 프런트와 백의 url이 달라서 허용할 포트
-							configuration.setAllowedMethods(Collections.singletonList("*"));		// 허용할 메서드
-							configuration.setAllowCredentials(true);
-							configuration.setAllowedHeaders(Collections.singletonList("*"));		// 허용할 헤더
-							configuration.setMaxAge(3600L);											// 허용할 시간
-							configuration.setExposedHeaders(Collections.singletonList("accessToken"));	// 클라이언트로 헤더 보내줄때 이 헤더도 허용
-							return configuration;
-						}
-					}));
+					.configurationSource(request -> {
+                        CorsConfiguration configuration = new CorsConfiguration();
+                        configuration.setAllowedOrigins(Collections.singletonList(HOST_FRONT));	// 프런트와 백의 url이 달라서 허용할 포트
+                        configuration.setAllowedMethods(Collections.singletonList("*"));		// 허용할 메서드
+                        configuration.setAllowCredentials(true);
+                        configuration.setAllowedHeaders(Collections.singletonList("*"));		// 허용할 헤더
+                        configuration.setMaxAge(3600L);											// 허용할 시간
+                        configuration.setExposedHeaders(Collections.singletonList("accessToken"));	// 클라이언트로 헤더 보내줄때 이 헤더도 허용
+                        return configuration;
+                    }));
 		
 		// csrf 사용안함
 		http
-			.csrf((auth) -> auth.disable());
+			.csrf(AbstractHttpConfigurer::disable);
 		
 		// form 로그인방식 사용안함
 		http
-			.formLogin((auth) -> auth.disable());
+			.formLogin(AbstractHttpConfigurer::disable);
 		
 		// http basic 인증방식 사용안함
 		http
-			.httpBasic((auth) -> auth.disable());
+			.httpBasic(AbstractHttpConfigurer::disable);
 
 		// url 접근 허용
 		http
@@ -132,7 +123,4 @@ public class SecurityConfig {
 		
 		return http.build();
 	}
-	
-	
-	
 }

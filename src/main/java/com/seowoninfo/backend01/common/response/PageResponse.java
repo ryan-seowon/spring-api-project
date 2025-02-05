@@ -7,11 +7,10 @@ import org.springframework.data.domain.Sort;
 
 /**
  * 페이지정보
- * @param <T>
  */
 @Getter
 @AllArgsConstructor
-public class PageResponse<T> {
+public class PageResponse {
 	private long totalElements;		// 전체 갯수
 	private int size;				// 페이지사이즈
 	private int totalPages;			// 전체페이지갯수
@@ -23,8 +22,8 @@ public class PageResponse<T> {
 	private Sort sort;				// 소트정보
 //	private Pageable pageable;		// 페이지정보 (별필요없어보여 안내려줄거임)
 
-	public static <T> PageResponse<T> pageInfo(Page<T> page){
-		return new PageResponse<>(
+	public static PageResponse pageInfo(Page page){
+		return new PageResponse(
 				page.getTotalElements()
 				, page.getSize()
 				, page.getTotalPages()

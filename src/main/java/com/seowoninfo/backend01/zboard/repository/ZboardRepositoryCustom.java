@@ -11,9 +11,5 @@ public interface ZboardRepositoryCustom {
 	 * 게시글리스트
 	 */
 	Page<ZboardResponseDto> findBoardAll(ZboardSearchDto paramDto, Pageable pageable);
-	
-	/**
-	 * 게시글상세
-	 */
-	ZboardResponseDto findBoardbySeq(Long boardSeq) throws Exception;
+
 }

@@ -73,17 +73,17 @@ public class SwaggerConfig {
 	}
 	
 	private List<Server> apiServer(){
-		List<Server> server = new ArrayList<Server>();
+		List<Server> server = new ArrayList<>();
 		
 		final Server localServer = new Server();
 		localServer.setUrl(HOST_API);
 		localServer.description("로컬 서버 도매인");
 		server.add(localServer);
 
-//		final Server devServer = new Server();
-//		devServer.setUrl("http://61.251.164.192");
-//		devServer.description("개발 서버 도매인");
-//		server.add(devServer);
+		final Server devServer = new Server();
+		devServer.setUrl("http://61.251.164.192");
+		devServer.description("개발 서버 도매인");
+		server.add(devServer);
 		
 		return server;
 	}
@@ -110,11 +110,11 @@ public class SwaggerConfig {
 								.map(UsernamePasswordAuthenticationFilter.class::cast)
 								.findAny();
 				if (optionalFilter.isPresent()) {
-					UsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter = optionalFilter.get();
+//					UsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter = optionalFilter.get();
 					Operation operation = new Operation();
 					Schema<?> schema = new ObjectSchema()
-							.addProperties("memberId", new StringSchema()._default("sil1"))
-							.addProperties("password", new StringSchema()._default("1234"));
+							.addProperty("memberId", new StringSchema()._default("sil1"))
+							.addProperty("password", new StringSchema()._default("1234"));
 					RequestBody requestBody = new RequestBody().content(new Content().addMediaType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE, new MediaType().schema(schema)));
 					operation.requestBody(requestBody);
 					ApiResponses apiResponses = new ApiResponses();

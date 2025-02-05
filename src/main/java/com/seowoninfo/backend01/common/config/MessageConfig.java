@@ -1,6 +1,8 @@
 package com.seowoninfo.backend01.common.config;
 
+import com.seowoninfo.backend01.common.util.UtilCommon;
 import jakarta.servlet.http.HttpServletRequest;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,19 +52,20 @@ public class MessageConfig{
 
 	public static class CustomLocaleResolver extends AcceptHeaderLocaleResolver {
 		String[] mLanguageCode = new String[]{"ko", "en"};
-		List<Locale> mLocales = Arrays.asList(new Locale("en"), new Locale("es"), new Locale("ko"));
+		List<Locale> mLocales = Arrays.asList(Locale.of("en"), Locale.of("es"), Locale.of("ko"));
 
+		@NotNull
 		@Override
 		public Locale resolveLocale(HttpServletRequest request) {
 			// 언어팩 변경
 			String acceptLanguage = request.getHeader(HttpHeaders.ACCEPT_LANGUAGE);
-			if (acceptLanguage == null || "".equals(acceptLanguage)) {
+			if (UtilCommon.isEmpty(acceptLanguage)) {
 				return Locale.getDefault();
 			}
 			List<Locale.LanguageRange> list = Locale.LanguageRange.parse(request.getHeader("Accept-Language"));
 			mLocales = new ArrayList<>();
 			for (String code : mLanguageCode) {
-				mLocales.add(new Locale(code));
+				mLocales.add(Locale.of(code));
 			}
 			return Locale.lookup(list, mLocales);
 		}

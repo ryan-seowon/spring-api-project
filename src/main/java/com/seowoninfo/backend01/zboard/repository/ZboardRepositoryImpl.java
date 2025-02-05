@@ -126,26 +126,5 @@ public class ZboardRepositoryImpl implements ZboardRepositoryCustom {
 	private BooleanExpression contentsContains(String searchValue) {
 		return UtilCommon.isEmpty(searchValue) ? null : zboard.boardContents.containsIgnoreCase(searchValue);
 	}
-	
-	@Override
-	public ZboardResponseDto findBoardbySeq(Long boardSeq) throws Exception {
-		ZboardResponseDto query = queryFactory.select(
-				Projections.bean(ZboardResponseDto.class
-				, zboard.boardSeq
-				, zboard.boardTitle
-				, zboard.boardContents
-				, zboard.viewCount
-				, zboard.priorityYn
-				, zboard.deletedYn
-				, zboard.createdBy
-				, zboard.createdDttm
-				, zboard.modifiedBy
-				, zboard.modifiedDttm
-			))
-		.from(zboard)
-		.where(zboard.boardSeq.eq(boardSeq))
-		.fetchOne();
 
-		return query;
-	}
 }

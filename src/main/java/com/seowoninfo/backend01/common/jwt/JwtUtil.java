@@ -1,6 +1,5 @@
 package com.seowoninfo.backend01.common.jwt;
 
-import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -9,13 +8,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Map;
 
-
-/**
- * jwt버전 0.12.3 
- * 개발자 유미
- * https://www.youtube.com/watch?v=7B6KHSZN3jY
- */
 @Component
 public class JwtUtil {
 
@@ -28,8 +22,6 @@ public class JwtUtil {
 	
 	/**
 	 * 아이디 가져오기
-	 * @param token
-	 * @return
 	 */
 	public String getMemberId(String token) {
 		// 암호화된 토큰을 보안키를 적용해서 확인한다.
@@ -39,8 +31,6 @@ public class JwtUtil {
 
 	/**
 	 * Role 을 가져온다
-	 * @param token
-	 * @return
 	 */
 	public String getMeberRole(String token) {
 		// 암호화된 토큰을 보안키를 적용해서 확인한다.
@@ -50,8 +40,6 @@ public class JwtUtil {
 
 	/**
 	 * access인지, refresh토큰인지 구분
-	 * @param token
-	 * @return
 	 */
 	public String getTokenCategory(String token) {
 		return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("tokenCategory", String.class);
@@ -59,27 +47,20 @@ public class JwtUtil {
 	
 	/**
 	 * 토큰 만료 여부
-	 * @param token
-	 * @return
 	 */
-	public Boolean isExpired(String token) {
+	public void isExpired(String token) {
 		// 암호화된 토큰을 보안키를 적용해서 확인한다.
 		// 토큰 만료확인
-		return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+		Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration();
 	}
 	
 	
 	/**
 	 * 토큰 발행
-	 * @param tokenCategory
-	 * @param memberId
-	 * @param memberRole
-	 * @param expiredMs
-	 * @return
 	 */
 	public String createJwt(String tokenCategory, String memberId, String memberRole, Long expiredMs) {
 		return Jwts.builder()
-				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+				.setHeader(Map.of("typ", "JWT"))
 				.claim("tokenCategory", tokenCategory)	// access인지, refresh토큰인지 구분값
 				.claim("memberId", memberId)
 				.claim("memberRole", memberRole)

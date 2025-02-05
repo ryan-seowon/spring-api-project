@@ -39,8 +39,6 @@ public class GlobalExceptionHandler {
 	/**
 	 * 글로벌 익셉션
 	 * 일반적인 익셉션은 여기로 다 들어온다
-	 * @param e
-	 * @return
 	 */
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<ApiResponseFail<?>> exceptionHandler(Exception e) {
@@ -51,8 +49,6 @@ public class GlobalExceptionHandler {
 
 	/**
 	 * 데이타베이스 익셉션
-	 * @param e
-	 * @return
 	 */
 	@ExceptionHandler(value = DataAccessException.class)
 	public ResponseEntity<ApiResponseFail<?>> exceptionHandler(DataAccessException e) {
@@ -63,8 +59,6 @@ public class GlobalExceptionHandler {
 	
 	/**
 	 * 쿼리 익셉션
-	 * @param e
-	 * @return
 	 */
 	@ExceptionHandler(value = SQLException.class)
 	public ResponseEntity<ApiResponseFail<?>> exceptionHandler(SQLException e) {
@@ -76,8 +70,6 @@ public class GlobalExceptionHandler {
 	
 	/**
 	 * 지원하지 않은 HTTP method 호출 할 경우 발생
-	 * @param e
-	 * @return
 	 */
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class) // HttpRequestMethodNotSupportedException 예외를 잡아서 처리
 	protected ResponseEntity<ApiResponseFail<?>> exceptionHandler(HttpRequestMethodNotSupportedException e) {
@@ -88,8 +80,6 @@ public class GlobalExceptionHandler {
 	
 	/**
 	 * 404 not found
-	 * @param e
-	 * @return
 	 */
 	@ExceptionHandler(NoHandlerFoundException.class)
 	protected ResponseEntity<ApiResponseFail<?>> exceptionHandler(NoHandlerFoundException e) {
@@ -102,33 +92,27 @@ public class GlobalExceptionHandler {
 	 * 커스텀 익셉션
 	 * 의도한 익셉션의 경우 여기로 들어온다
 	 * throw new CustomException(ExceptionClass.PROVIDER, HttpStatus.FORBIDDEN, "접근금지");
-	 * @param e
-	 * @return
 	 */
 	@ExceptionHandler(value = CustomException.class)
 	public ResponseEntity<ApiResponseFail<?>> exceptionHandler(CustomException e) {
 		log.debug("GlobalExceptionHandler:CustomException");
-		log.debug("e.getMessage() = " + e.getMessage());
-		log.debug("responseCode.code = " + e.getResponseCode().code());
-		log.debug("responseCode.message = " + e.getResponseCode().message());
+		log.debug("e.getMessage() = {}", e.getMessage());
+		log.debug("responseCode.code = {}", e.getResponseCode().code());
+		log.debug("responseCode.message = {}", e.getResponseCode().message());
 		for(StackTraceElement error : e.getStackTrace()) {log.debug(error.toString());}
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponseFail.fail(e.getResponseCode(), e.getMessage()));
 	}
 	
 	/**
 	 * validation 익셉션 발생시
-	 * @param e
-	 * @return
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ApiResponseFail<?>> exceptionHandler(final MethodArgumentNotValidException e) {
 		log.debug("GlobalExceptionHandler:MethodArgumentNotValidException");
 		log.debug(e.getMessage());
 		// @valid 어토테이션과 dto의 제약으로 발생된 오류
-		Map<String, Object> errors = new HashMap<String, Object>();
-		e.getBindingResult().getAllErrors().forEach((error)-> {
-			errors.put(((FieldError) error).getField(), error.getDefaultMessage());
-		});
+		Map<String, Object> errors = new HashMap<>();
+		e.getBindingResult().getAllErrors().forEach(error -> errors.put(((FieldError) error).getField(), error.getDefaultMessage()));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponseFail.fail(ResponseCode.METHOD_ARGUMENT_NOT_VALID_EXCEPTION, errors, utilMessage.getMessage("exception.valid.anotation", null)));
 	}
 	
@@ -138,7 +122,7 @@ public class GlobalExceptionHandler {
 		response.setStatus(httpStatus.value());
 		response.setContentType("application/json;charset=UTF-8");
 		try {
-			Map<String, Object> responseBody = new HashMap<String, Object>();
+			Map<String, Object> responseBody = new HashMap<>();
 			responseBody.put("errorCode", responseCode.code());
 
 			responseBody.put("message", message);

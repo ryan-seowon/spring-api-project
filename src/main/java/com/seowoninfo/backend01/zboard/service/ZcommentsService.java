@@ -41,7 +41,7 @@ public class ZcommentsService {
     /**
      * 댓글리스트
      */
-    public Map<String, Object> commentsList(Long boardSeq, Pageable pageable) throws Exception {
+    public Map<String, Object> commentsList(Long boardSeq, Pageable pageable) {
         Map<String, Object> map = new HashMap<>();
         List<ZcommentsResponseDto> resultList = new ArrayList<>();
         Map<Long, ZcommentsResponseDto> imsiMap = new HashMap<>();
@@ -67,7 +67,7 @@ public class ZcommentsService {
      * 댓글 등록
      */
     @Transactional
-    public ZcommentsResponseDto commentsCreate(ZcommentsCreateDto paramDto) throws Exception{
+    public ZcommentsResponseDto commentsCreate(ZcommentsCreateDto paramDto) {
         Zboard board = boardRepository.findByBoardSeq(paramDto.getBoardSeq());
         Zcomments entity = commentsRepository.save(Zcomments.toEntity(paramDto, board));
         return ZcommentsResponseDto.toDto(entity);
@@ -77,7 +77,7 @@ public class ZcommentsService {
      * 댓글 수정
      */
     @Transactional
-    public ZcommentsResponseDto commentsModify(Long boardSeq, ZcommentsModifyDto paramDto) throws Exception{
+    public ZcommentsResponseDto commentsModify(Long boardSeq, ZcommentsModifyDto paramDto) {
         Zcomments entity = commentsRepository.findById(boardSeq).orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_GET_NODATA, utilMessage.getMessage("exception.modify.nodata", null)));
         entity.modifyComments(paramDto);
         return ZcommentsResponseDto.toDto(entity);
@@ -87,7 +87,7 @@ public class ZcommentsService {
      * 댓글 삭제
      */
     @Transactional
-    public ZcommentsResponseDto commentsDelete(Long commentsSeq) throws Exception{
+    public ZcommentsResponseDto commentsDelete(Long commentsSeq) {
         Zcomments entity = commentsRepository.findById(commentsSeq).orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_GET_NODATA, utilMessage.getMessage("exception.delete.nodata", null)));
         commentsRepository.delete(entity);
         return ZcommentsResponseDto.toDto(entity);
