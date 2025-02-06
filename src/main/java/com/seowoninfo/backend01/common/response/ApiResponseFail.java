@@ -3,11 +3,6 @@ package com.seowoninfo.backend01.common.response;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.context.i18n.LocaleContextHolder;
-
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 실패 응답구조
@@ -18,24 +13,20 @@ import java.util.Map;
 public class ApiResponseFail<T> {
 
 	private String errorCode;
-	private Map<String, Object> header;
-	private T error;
+	private String message;
+	private T errors;
 
 	public static <T> ApiResponseFail<T> fail(ResponseCode responseCode, String message) {
-		return new ApiResponseFail<>(responseCode, null, message);
+		return new ApiResponseFail<>(responseCode, message, null);
 	}
 
-	public static <T> ApiResponseFail<T> fail(ResponseCode responseCode, T error, String message) {
-		return new ApiResponseFail<>(responseCode, error, message);
+	public static <T> ApiResponseFail<T> fail(ResponseCode responseCode, String message, T errors) {
+		return new ApiResponseFail<>(responseCode, message, errors);
 	}
 
-	private ApiResponseFail(ResponseCode responseCode, T error, String message) {
+	private ApiResponseFail(ResponseCode responseCode, String message, T errors) {
 		this.errorCode = responseCode.code();
-		this.error = error;
-		Map<String, Object> headerMap = new HashMap<>();
-		headerMap.put("message", message);
-		headerMap.put("locale", LocaleContextHolder.getLocale());
-		headerMap.put("timestamp", LocalDateTime.now());
-		this.header = headerMap;
+		this.message = message;
+		this.errors = errors;
 	}
 }

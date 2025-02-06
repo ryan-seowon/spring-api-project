@@ -6,12 +6,15 @@ import com.seowoninfo.backend01.common.response.ApiResponseFail;
 import com.seowoninfo.backend01.common.response.ResponseCode;
 import com.seowoninfo.backend01.common.util.UtilMessage;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,7 +26,9 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -111,9 +116,9 @@ public class GlobalExceptionHandler {
 		log.debug("GlobalExceptionHandler:MethodArgumentNotValidException");
 		log.debug(e.getMessage());
 		// @valid 어토테이션과 dto의 제약으로 발생된 오류
-		Map<String, Object> errors = new HashMap<>();
-		e.getBindingResult().getAllErrors().forEach(error -> errors.put(((FieldError) error).getField(), error.getDefaultMessage()));
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponseFail.fail(ResponseCode.METHOD_ARGUMENT_NOT_VALID_EXCEPTION, errors, utilMessage.getMessage("exception.valid.anotation", null)));
+		List<ErrorDto> errors = new ArrayList<>();
+		e.getBindingResult().getAllErrors().forEach(error -> errors.add(new ErrorDto(((FieldError) error).getField(), error.getDefaultMessage())));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponseFail.fail(ResponseCode.METHOD_ARGUMENT_NOT_VALID_EXCEPTION, utilMessage.getMessage("exception.valid.anotation", null), errors));
 	}
 	
 	// 필터등에서 exception이 발생할 경우 advice 범위 밖이라 여기로 안들어옴. 데이타 가공 
@@ -137,6 +142,18 @@ public class GlobalExceptionHandler {
 			writer.close();
 		} catch (Exception e) {
 			log.error(e.getMessage());
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor
+	static class ErrorDto{
+		private String errorField;
+		private String errorMessage;
+
+		public ErrorDto(String errorField, String errorMessage) {
+			this.errorField = errorField;
+			this.errorMessage = errorMessage;
 		}
 	}
 }
