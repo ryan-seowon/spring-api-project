@@ -10,13 +10,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * FileName    : IntelliJ IDEA
@@ -35,39 +33,29 @@ public class ZcommentsController {
 
     @Operation(summary = "댓글 리스트", description = "댓글 리스트")
     @GetMapping("/")
-    public ApiResponse<Map<String, Object>> commentsList(
+    public ApiResponse<Page<ZcommentsResponseDto>> commentsList(
             @RequestParam(value = "boardSeq") Long boardSeq
             , @PageableDefault(sort = "commentsSeq", direction = Sort.Direction.DESC)Pageable pageable) throws Exception{
-        return ApiResponse.success(zcommentsService.commentsList(boardSeq, pageable));
+        // TODO: 대댓글 개념이라 페이징 상이할 수 있음. 업무에 따라 개선이 필요함
+        return new ApiResponse<>(zcommentsService.commentsList(boardSeq, pageable));
     }
 
     @Operation(summary = "댓글 등록", description = "댓글을 등록한다")
     @PostMapping("/")
-    public ApiResponse<Map<String, Object>> commentsCreate(@Valid @RequestBody ZcommentsCreateDto paramDto) throws Exception{
+    public ApiResponse<ZcommentsResponseDto> commentsCreate(@Valid @RequestBody ZcommentsCreateDto paramDto) throws Exception{
         log.debug("등록파람: {}", paramDto.toString());
-        ZcommentsResponseDto result = zcommentsService.commentsCreate(paramDto);
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("result", result);
-
-        return ApiResponse.success(map);
+        return new ApiResponse<>(zcommentsService.commentsCreate(paramDto));
     }
 
     @Operation(summary = "댓글 수정", description = "댓글을 수정한다")
     @PatchMapping("/{commentsSeq}")
-    public ApiResponse<Map<String, Object>> scommentsModify(@PathVariable Long commentsSeq, @RequestBody ZcommentsModifyDto paramDto) throws Exception{
-        ZcommentsResponseDto result = zcommentsService.commentsModify(commentsSeq, paramDto);
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("result", result);
-
-        return ApiResponse.success(map);
+    public ApiResponse<ZcommentsResponseDto> scommentsModify(@PathVariable Long commentsSeq, @RequestBody ZcommentsModifyDto paramDto) throws Exception{
+        return new ApiResponse<>(zcommentsService.commentsModify(commentsSeq, paramDto));
     }
 
     @Operation(summary = "댓글 삭제", description = "댓글을 삭제한다")
     @DeleteMapping("/{commentsSeq}")
-    public ApiResponse<Map<String, Object>> scommentsCreate(@PathVariable Long commentsSeq) throws Exception{
-        zcommentsService.commentsDelete(commentsSeq);
-        return ApiResponse.success();
+    public ApiResponse<ZcommentsResponseDto> scommentsCreate(@PathVariable Long commentsSeq) throws Exception{
+        return new ApiResponse<>(zcommentsService.commentsDelete(commentsSeq));
     }
 }

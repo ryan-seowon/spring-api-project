@@ -129,13 +129,8 @@ public class GlobalExceptionHandler {
 		try {
 			Map<String, Object> responseBody = new HashMap<>();
 			responseBody.put("errorCode", responseCode.code());
-
 			responseBody.put("message", message);
-			responseBody.put("locale", LocaleContextHolder.getLocale());
-			responseBody.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern(ConstantsStatic.format_datetime)));
-
-
-			responseBody.put("error", null);
+			responseBody.put("errors", null);
 			PrintWriter writer = response.getWriter();
 			writer.write(new ObjectMapper().writeValueAsString(responseBody));
 			writer.flush();

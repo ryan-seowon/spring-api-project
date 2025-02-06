@@ -2,7 +2,6 @@ package com.seowoninfo.backend01.zboard.service;
 
 
 import com.seowoninfo.backend01.common.exception.CustomException;
-import com.seowoninfo.backend01.common.response.PageResponse;
 import com.seowoninfo.backend01.common.response.ResponseCode;
 import com.seowoninfo.backend01.common.util.UtilCommon;
 import com.seowoninfo.backend01.common.util.UtilFile;
@@ -28,7 +27,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * 게시판
@@ -50,20 +52,14 @@ public class ZboardService {
 	/**
 	 * 게시판리스트
 	 */
-	public Map<String, Object> boardList(ZboardSearchDto paramDto, Pageable pageable) {
-		Map<String, Object> map = new HashMap<>();
-		Page<ZboardResponseDto> page = boardRepository.findBoardAll(paramDto, pageable);
-		List<ZboardResponseDto> resultList = page.getContent();
-		map.put("pageInfo", PageResponse.pageInfo(page));
-		map.put("resultList", resultList);
-		return map;
+	public Page<ZboardResponseDto> boardList(ZboardSearchDto paramDto, Pageable pageable) {
+		return boardRepository.findBoardAll(paramDto, pageable);
 	}
 
 	/**
 	 * 게시판상세
 	 */
 	public ZboardResponseDto boardDetail(Long boardSeq) {
-//		Zboard zboard = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, utilMessage.getMessage("exception.get.nodata", null)));
 		Zboard zboard = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_GET_NODATA, utilMessage.getMessage("exception.get.nodata", null)));
 		ZboardResponseDto result = ZboardResponseDto.toDto(zboard);
 

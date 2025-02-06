@@ -1,7 +1,6 @@
 package com.seowoninfo.backend01.zboard.service;
 
 import com.seowoninfo.backend01.common.exception.CustomException;
-import com.seowoninfo.backend01.common.response.PageResponse;
 import com.seowoninfo.backend01.common.response.ResponseCode;
 import com.seowoninfo.backend01.common.util.UtilCommon;
 import com.seowoninfo.backend01.common.util.UtilMessage;
@@ -14,6 +13,7 @@ import com.seowoninfo.backend01.zboard.repository.ZboardRepository;
 import com.seowoninfo.backend01.zboard.repository.ZcommentsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,9 +41,9 @@ public class ZcommentsService {
     /**
      * 댓글리스트
      */
-    public Map<String, Object> commentsList(Long boardSeq, Pageable pageable) {
+    public Page<ZcommentsResponseDto> commentsList(Long boardSeq, Pageable pageable) {
         Map<String, Object> map = new HashMap<>();
-        List<ZcommentsResponseDto> resultList = new ArrayList<>();
+        List<ZcommentsResponseDto> resultContents = new ArrayList<>();
         Map<Long, ZcommentsResponseDto> imsiMap = new HashMap<>();
 
         // 댓글 부모 밑에 자식 붙이기
@@ -52,15 +52,15 @@ public class ZcommentsService {
         imsiResultList.forEach(item -> {
             imsiMap.put(item.getCommentsSeq(), item);
             if(UtilCommon.isEmpty(item.getParentsCommentsSeq())){
-                resultList.add(item);
+                resultContents.add(item);
             }else{
-                imsiMap.get(item.getParentsCommentsSeq()).getChildren().add(item);
+                imsiMap.get(item.getParentsCommentsSeq()).getReComments().add(item);
             }
         });
 
-        map.put("pageInfo", PageResponse.pageInfo(page));
-        map.put("resultList", resultList);
-        return map;
+        Page<ZcommentsResponseDto> resultPage = new PageImpl<>(resultContents, pageable, resultContents.size());
+
+        return page;
     }
 
     /**

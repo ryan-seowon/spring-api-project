@@ -11,15 +11,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * FileName    : IntelliJ IDEA
@@ -38,53 +36,39 @@ public class ZboardController {
 
     @Operation(summary = "게시판 리스트", description = "게시판 리스트")
     @GetMapping("")
-    public ApiResponse<Map<String, Object>> boardList(
+    public ApiResponse<Page<ZboardResponseDto>> boardList(
             ZboardSearchDto paramDto
-            , @PageableDefault(sort = "priorityYn", direction = Sort.Direction.DESC) Pageable pageable) throws Exception{
-        return ApiResponse.success(boardService.boardList(paramDto, pageable));
+            , @PageableDefault(sort = "priorityYn", direction = Sort.Direction.DESC) Pageable pageable) {
+        return new ApiResponse<>(boardService.boardList(paramDto, pageable));
     }
 
     @Operation(summary = "게시판 상세", description = "게시판 상세")
     @GetMapping("/{boardSeq}")
-    public ApiResponse<Map<String, Object>> boardDetail(@PathVariable Long boardSeq) throws Exception{
-        Map<String, Object> map = new HashMap<>();
-        map.put("result", boardService.boardDetail(boardSeq));
-        return ApiResponse.success(map);
+    public ApiResponse<ZboardResponseDto> boardDetail(@PathVariable Long boardSeq) {
+        return new ApiResponse<>(boardService.boardDetail(boardSeq));
     }
 
     @Operation(summary = "게시판 등록", description = "게시판을 등록한다")
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<Map<String, Object>> boardCreate(
+    public ApiResponse<ZboardResponseDto> boardCreate(
             @Valid @RequestPart(name = "paramDto") ZboardCreateDto paramDto,
-            @RequestPart(name = "paramFiles", required = false) MultipartFile[] paramFiles) throws Exception{
+            @RequestPart(name = "paramFiles", required = false) MultipartFile[] paramFiles) throws Exception {
         log.debug("등록파람: {}", paramDto.toString());
-        ZboardResponseDto result = boardService.boardCreate(paramDto, paramFiles);
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("result", result);
-
-        return ApiResponse.success(map);
+        return new ApiResponse<>(boardService.boardCreate(paramDto, paramFiles));
     }
 
     @Operation(summary = "게시판 수정", description = "게시판을 수정한다")
     @PatchMapping(value = "/{boardSeq}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<Map<String, Object>> boardModify(@PathVariable Long boardSeq,
+    public ApiResponse<ZboardResponseDto> boardModify(@PathVariable Long boardSeq,
                                               @Valid @RequestPart(name = "paramDto") ZboardModifyDto paramDto,
                                               @RequestPart(name = "files", required = false) MultipartFile[] files) throws Exception{
-        ZboardResponseDto result = boardService.boardModify(boardSeq, paramDto, files);
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("result", result);
-
-        return ApiResponse.success(map);
+        return new ApiResponse<>(boardService.boardModify(boardSeq, paramDto, files));
     }
 
     @Operation(summary = "게시판 삭제", description = "게시판을 삭제한다")
     @DeleteMapping("/{boardSeq}")
-    public ApiResponse<Map<String, Object>> boardCreate(@PathVariable Long boardSeq) throws Exception{
+    public ApiResponse<ZboardResponseDto> boardCreate(@PathVariable Long boardSeq) throws Exception{
         boardService.boardDelete(boardSeq);
-        return ApiResponse.success();
+        return new ApiResponse<>(boardService.boardDelete(boardSeq));
     }
-
-
 }

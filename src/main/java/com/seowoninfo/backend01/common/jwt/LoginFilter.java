@@ -128,11 +128,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setContentType("application/json;charset=UTF-8");
 
         Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("status", ResponseCode.SUCCESS.code());
-        responseBody.put("message", utilMessage.getMessage("login.success", null));
         responseBody.put("data", null);
-        responseBody.put("locale", LocaleContextHolder.getLocale());
-        responseBody.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern(ConstantsStatic.format_datetime)));
 
         PrintWriter writer = response.getWriter();
         writer.write(new ObjectMapper().writeValueAsString(responseBody));

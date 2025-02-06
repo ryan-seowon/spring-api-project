@@ -39,10 +39,10 @@ public class TokenController {
      */
     @Operation(summary = "토큰 재발급", description = "토큰 재발급")
     @PostMapping("/reIssue")
-    public ApiResponse<JSONObject> reissue(HttpServletRequest request, HttpServletResponse response) throws Exception{
+    public ApiResponse<?> reissue(HttpServletRequest request, HttpServletResponse response) throws Exception{
         Map<String, String> result = tokenService.reissue(request, response);
         response.setHeader("accessToken", result.get("accessToken"));					// access 토큰은 헤더로 내려줌
         response.addCookie(UtilCommon.createCookie("refreshToken", result.get("refreshToken")));	// refresh 토큰은 쿠키에 저장
-        return ApiResponse.success();
+        return new ApiResponse<>(null);
     }
 }

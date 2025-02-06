@@ -27,7 +27,7 @@ public class ZcommentsResponseDto {
 	private LocalDateTime createdDttm;
 	private String modifiedBy;
 	private LocalDateTime modifiedDttm;
-	private List<ZcommentsResponseDto> children = new ArrayList<>();	// 자식댓글
+	private List<ZcommentsResponseDto> reComments = new ArrayList<>();	// 자식댓글
 
 	// Entity -> DTO 로 변환
 	public static ZcommentsResponseDto toDto(Zcomments item) {
