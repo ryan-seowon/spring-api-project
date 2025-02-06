@@ -117,7 +117,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         refreshInsertDto.setMemberId(memberId);
         refreshInsertDto.setRefreshToken(refreshToken);
         refreshInsertDto.setRefreshTokenExpiration(LocalDateTime.now().plusSeconds(JWT_REFRESH_EXPIRATION));
-        tokenRepository.save(Token.toEntity(refreshInsertDto));
+        tokenRepository.save(refreshInsertDto.toEntity());
 
         // 응답설정
         response.setHeader("accessToken", accessToken);                    // access 토큰은 헤더로 내려줌

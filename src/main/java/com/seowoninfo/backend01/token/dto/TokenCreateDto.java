@@ -1,5 +1,6 @@
 package com.seowoninfo.backend01.token.dto;
 
+import com.seowoninfo.backend01.token.entity.Token;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -24,5 +25,14 @@ public class TokenCreateDto {
 	
 	@Size(max = 100)
 	private LocalDateTime refreshTokenExpiration;
-	
+
+	// DTO -> Entity 로 변환
+	public Token toEntity() {
+		return Token.builder()
+				.memberId(memberId)
+				.refreshToken(refreshToken)
+				.refreshTokenExpiration(refreshTokenExpiration)
+				.build();
+	}
+
 }

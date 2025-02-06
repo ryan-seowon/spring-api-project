@@ -38,13 +38,4 @@ public class Token extends Base {
 	@Comment("리프레시토큰만료일시")
 	@Column(name = "REFRESH_TOKEN_EXPIRATION")
 	private LocalDateTime refreshTokenExpiration;
-
-	// DTO -> Entity 로 변환
-	public static Token toEntity(TokenCreateDto item) {
-		return Token.builder()
-				.memberId(item.getMemberId())
-				.refreshToken(item.getRefreshToken())
-				.refreshTokenExpiration(item.getRefreshTokenExpiration())
-				.build();
-	}
 }

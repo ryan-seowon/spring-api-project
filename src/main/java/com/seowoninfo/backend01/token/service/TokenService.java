@@ -103,7 +103,7 @@ public class TokenService {
         refreshCreateDto.setMemberId(memberId);
         refreshCreateDto.setRefreshToken(newRefreshToken);
         refreshCreateDto.setRefreshTokenExpiration(LocalDateTime.now().plusSeconds(JWT_REFRESH_EXPIRATION));
-        tokenRepository.save(Token.toEntity(refreshCreateDto));
+        tokenRepository.save(refreshCreateDto.toEntity());
 
         // 응답
         Map<String, String> map = new HashMap<String, String>();
