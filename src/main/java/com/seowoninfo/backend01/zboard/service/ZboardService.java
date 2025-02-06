@@ -52,8 +52,8 @@ public class ZboardService {
 	/**
 	 * 게시판리스트
 	 */
-	public Page<ZboardResponseDto> boardList(ZboardSearchDto paramDto, Pageable pageable) {
-		return boardRepository.findBoardAll(paramDto, pageable);
+	public Page<ZboardResponseDto> boardList(ZboardSearchDto zboardCreateDto, Pageable pageable) {
+		return boardRepository.findBoardAll(zboardCreateDto, pageable);
 	}
 
 	/**
@@ -76,17 +76,17 @@ public class ZboardService {
 	 * 게시판 등록
 	 */
 	@Transactional
-	public ZboardResponseDto boardCreate(ZboardCreateDto paramDto, MultipartFile[] paramFiles) throws Exception{
+	public ZboardResponseDto boardCreate(ZboardCreateDto zboardCreateDto, MultipartFile[] files) throws Exception{
 		// S: 유효성검증
 		// E: 유효성검증
 
-		Zboard board = boardRepository.save(Zboard.toEntity(paramDto));
+		Zboard board = boardRepository.save(zboardCreateDto.toEntity());
 
 		// 파일업로드
-		if(UtilCommon.isNotEmpty(paramFiles)) {
+		if(UtilCommon.isNotEmpty(files)) {
 			ZfileCreateDto fileDto;
 			StringBuilder systemFileName;
-			for(MultipartFile file : paramFiles) {
+			for(MultipartFile file : files) {
 //				log.debug("upload file: {}", file.getOriginalFilename());
 
 				systemFileName = new StringBuilder();
@@ -119,14 +119,14 @@ public class ZboardService {
 	 * 게시판 수정
 	 */
 	@Transactional
-	public ZboardResponseDto boardModify(Long boardSeq, ZboardModifyDto paramDto, MultipartFile[] files) throws Exception{
+	public ZboardResponseDto boardModify(Long boardSeq, ZboardModifyDto zboardModifyDto, MultipartFile[] files) throws Exception{
 		Zboard board = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_GET_NODATA, utilMessage.getMessage("exception.modify.nodata", null)));
-		board.modifyZboard(paramDto);
-		
+		board.modifyZboard(zboardModifyDto);
+
 		// UI상에서 삭제된 파일은 삭제처리해야함
 		// 파일정보삭제
-		if(UtilCommon.isNotEmpty(paramDto.getFileSeqs())) {
-			for(Long item : paramDto.getFileSeqs()) {
+		if(UtilCommon.isNotEmpty(zboardModifyDto.getFileSeqs())) {
+			for(Long item : zboardModifyDto.getFileSeqs()) {
 				Optional<Zfile> zfileOptional = fileRepository.findById(item);
 				if(zfileOptional.isPresent()){
 					Zfile file = zfileOptional.get();

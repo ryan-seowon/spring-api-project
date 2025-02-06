@@ -24,6 +24,5 @@ public class ZboardModifyDto {
 	private String boardContents;	// 게시글내용
 	@YnCode
 	private String priorityYn;		// 중요여부
-
 	private Long[] fileSeqs;		// 파일순번
 }

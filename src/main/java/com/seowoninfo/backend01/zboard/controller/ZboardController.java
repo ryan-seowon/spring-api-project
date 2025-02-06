@@ -37,9 +37,9 @@ public class ZboardController {
     @Operation(summary = "게시판 리스트", description = "게시판 리스트")
     @GetMapping("")
     public ApiResponse<Page<ZboardResponseDto>> boardList(
-            ZboardSearchDto paramDto
+            ZboardSearchDto zboardSearchDto
             , @PageableDefault(sort = "priorityYn", direction = Sort.Direction.DESC) Pageable pageable) {
-        return new ApiResponse<>(boardService.boardList(paramDto, pageable));
+        return new ApiResponse<>(boardService.boardList(zboardSearchDto, pageable));
     }
 
     @Operation(summary = "게시판 상세", description = "게시판 상세")
@@ -51,18 +51,18 @@ public class ZboardController {
     @Operation(summary = "게시판 등록", description = "게시판을 등록한다")
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<ZboardResponseDto> boardCreate(
-            @Valid @RequestPart(name = "paramDto") ZboardCreateDto paramDto,
-            @RequestPart(name = "paramFiles", required = false) MultipartFile[] paramFiles) throws Exception {
-        log.debug("등록파람: {}", paramDto.toString());
-        return new ApiResponse<>(boardService.boardCreate(paramDto, paramFiles));
+            @Valid @RequestPart(name = "zboardCreateDto") ZboardCreateDto zboardCreateDto,
+            @RequestPart(name = "files", required = false) MultipartFile[] files) throws Exception {
+        log.debug("등록파람: {}", zboardCreateDto.toString());
+        return new ApiResponse<>(boardService.boardCreate(zboardCreateDto, files));
     }
 
     @Operation(summary = "게시판 수정", description = "게시판을 수정한다")
     @PatchMapping(value = "/{boardSeq}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<ZboardResponseDto> boardModify(@PathVariable Long boardSeq,
-                                              @Valid @RequestPart(name = "paramDto") ZboardModifyDto paramDto,
+                                              @Valid @RequestPart(name = "zboardModifyDto") ZboardModifyDto zboardModifyDto,
                                               @RequestPart(name = "files", required = false) MultipartFile[] files) throws Exception{
-        return new ApiResponse<>(boardService.boardModify(boardSeq, paramDto, files));
+        return new ApiResponse<>(boardService.boardModify(boardSeq, zboardModifyDto, files));
     }
 
     @Operation(summary = "게시판 삭제", description = "게시판을 삭제한다")

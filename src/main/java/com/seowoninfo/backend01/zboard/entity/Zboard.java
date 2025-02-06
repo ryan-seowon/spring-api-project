@@ -65,15 +65,6 @@ public class Zboard extends Base {
     @OneToMany(mappedBy = "board")
     private List<Zfile> files = new ArrayList<>();
 
-    // DTO -> Entity 로 변환
-    public static Zboard toEntity(ZboardCreateDto item) {
-        return Zboard.builder()
-                .boardTitle(item.getBoardTitle())
-                .boardContents(item.getBoardContents())
-                .priorityYn(item.getPriorityYn())
-                .build();
-    }
-
     // 수정
     public void modifyZboard(ZboardModifyDto item) {
         this.boardTitle = item.getBoardTitle();
