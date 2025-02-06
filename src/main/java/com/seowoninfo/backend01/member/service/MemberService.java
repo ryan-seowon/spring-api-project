@@ -26,8 +26,6 @@ public class MemberService {
 
     /**
      * 회원정보상세
-     * @param memberSeq
-     * @return
      */
     public MemberResponseDto getMember(Long memberSeq) {
         Member member = memberRepository.findById(memberSeq).get();

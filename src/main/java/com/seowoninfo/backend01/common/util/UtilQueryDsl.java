@@ -9,10 +9,6 @@ public class UtilQueryDsl {
 
 	/**
 	 * sort 유틸
-	 * @param order
-	 * @param parent
-	 * @param fieldName
-	 * @return
 	 */
 	public static OrderSpecifier<?> getSortedColumn(Order order, Path<?> parent, String fieldName) {
 		Path<Object> fieldPath = Expressions.path(Object.class, parent, fieldName);

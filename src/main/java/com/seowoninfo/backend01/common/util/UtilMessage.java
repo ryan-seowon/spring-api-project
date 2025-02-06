@@ -43,8 +43,8 @@ public class UtilMessage {
 	 * 사용법: utilMessage.getMessage("validation.item2", new String[] {"정글", "맑음", "흐림"});
 	 * @param code 언어팩 코드
 	 * @param strs 동적 문자
-	 * @param locale
-	 * @return
+	 * @param locale 지역
+	 * @return message
 	 */
 	public String getMessage(String code, String[] strs, Locale locale) {
 		return messageSource.getMessage(code, strs, locale);

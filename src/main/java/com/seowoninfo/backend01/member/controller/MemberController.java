@@ -31,9 +31,6 @@ public class MemberController {
 
     /**
      * 회원상세
-     * @param memberSeq
-     * @return
-     * @throws Exception
      */
     @Operation(summary = "회원상세", description = "회원상세")
     @GetMapping("/{memberSeq}")

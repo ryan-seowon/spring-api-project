@@ -43,10 +43,6 @@ public class TokenService {
 
     /**
      * 토큰 재발행
-     * @param request
-     * @param response
-     * @return
-     * @throws Exception
      */
     public Map<String, String> reissue(HttpServletRequest request, HttpServletResponse response) throws Exception{
         // 쿠키에 생성한 refresh 토큰 가져온다

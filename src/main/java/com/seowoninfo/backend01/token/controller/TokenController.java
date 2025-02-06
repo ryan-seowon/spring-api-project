@@ -32,10 +32,6 @@ public class TokenController {
     /**
      * 토큰 재발급
      * 리프레시토큰을 활요하여 토큰 재발급
-     * @param request
-     * @param response
-     * @return
-     * @throws Exception
      */
     @Operation(summary = "토큰 재발급", description = "토큰 재발급")
     @PostMapping("/reIssue")
