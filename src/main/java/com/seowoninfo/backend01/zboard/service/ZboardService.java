@@ -52,8 +52,8 @@ public class ZboardService {
 	/**
 	 * 게시판리스트
 	 */
-	public Page<ZboardResponseDto> boardList(ZboardSearchDto zboardCreateDto, Pageable pageable) {
-		return boardRepository.findBoardAll(zboardCreateDto, pageable);
+	public Page<ZboardResponseDto> boardList(ZboardSearchDto zboardSearchDto, Pageable pageable) {
+		return boardRepository.findBoardAll(zboardSearchDto, pageable);
 	}
 
 	/**

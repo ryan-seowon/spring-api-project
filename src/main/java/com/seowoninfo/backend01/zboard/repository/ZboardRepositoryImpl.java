@@ -22,6 +22,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.querydsl.jpa.JPAExpressions.select;
 import static com.seowoninfo.backend01.zboard.entity.QZboard.zboard;
@@ -34,7 +35,7 @@ public class ZboardRepositoryImpl implements ZboardRepositoryCustom {
 	private final JPAQueryFactory queryFactory;
 	
 	@Override
-	public Page<ZboardResponseDto> findBoardAll(ZboardSearchDto paramDto, Pageable pageable) {
+	public Page<ZboardResponseDto> findBoardAll(ZboardSearchDto zboardSearchDto, Pageable pageable) {
 		List<OrderSpecifier> ORDERS = getAllOrderSpecifiers(pageable);
 		
 		List<ZboardResponseDto> query = queryFactory.select(
@@ -60,7 +61,9 @@ public class ZboardRepositoryImpl implements ZboardRepositoryCustom {
 								.where(zfile.board.eq(zboard)), "fileCount")
 			))
 			.from(zboard)
-			.where(allCondition(paramDto))
+			.where(Objects.requireNonNull(createdDttmBetween(zboardSearchDto.getStartDate(), zboardSearchDto.getEndDate()))
+					.and(searchValueAllCondition(zboardSearchDto.getSearchValue()))
+			)
 			.orderBy(ORDERS.toArray(OrderSpecifier[]::new))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
@@ -69,7 +72,7 @@ public class ZboardRepositoryImpl implements ZboardRepositoryCustom {
 		JPAQuery<Long> countQuery = queryFactory
 				.select(zboard.count())
 				.from(zboard)
-				.where(allCondition(paramDto));
+				.where(searchValueAllCondition(zboardSearchDto.getSearchValue()));
 		
 		return PageableExecutionUtils.getPage(query, pageable, countQuery::fetchOne);
 	}
@@ -92,18 +95,6 @@ public class ZboardRepositoryImpl implements ZboardRepositoryCustom {
 	}
 
 	/**
-	 * 검색조건
-	 */
-	private BooleanBuilder allCondition(ZboardSearchDto paramDto) {
-		BooleanBuilder builder = new BooleanBuilder();
-		return builder
-				.and(createdDttmBetween(paramDto.getStartDate(), paramDto.getEndDate()))
-				.and(titleContains(paramDto.getSearchValue()))
-				.and(contentsContains(paramDto.getSearchValue()));
-		
-	}
-
-	/**
 	 * 기간조건
 	 */
 	private BooleanExpression createdDttmBetween(LocalDate startDate, LocalDate endDate) {
@@ -111,6 +102,17 @@ public class ZboardRepositoryImpl implements ZboardRepositoryCustom {
 			return null;
 		}
 		return zboard.createdDttm.between(UtilDate.startDatetime(startDate), UtilDate.endDatetime(endDate));
+	}
+
+	/**
+	 * 검색조건
+	 */
+	private BooleanBuilder searchValueAllCondition(String searchValue) {
+		BooleanBuilder builder = new BooleanBuilder();
+		return builder
+				.and(titleContains(searchValue))
+				.or(contentsContains(searchValue));
+
 	}
 
 	/**

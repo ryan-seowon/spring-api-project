@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<ApiResponseFail<?>> exceptionHandler(Exception e) {
 		log.debug("GlobalExceptionHandler:Exception");
-		log.error(e.getMessage());
+//		log.error(e.getMessage());
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponseFail.fail(ResponseCode.INTERNAL_SERVER_ERROR, ResponseCode.INTERNAL_SERVER_ERROR.message()));
 	}
 

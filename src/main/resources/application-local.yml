@@ -102,3 +102,6 @@ logging:
   level:
     root: info
     com.seowoninfo.backend01: debug
+    jdbc:
+      sqlonly: debug
+      resultsettable: debug
