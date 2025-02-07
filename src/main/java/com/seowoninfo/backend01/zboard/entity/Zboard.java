@@ -5,10 +5,7 @@ import com.seowoninfo.backend01.zboard.dto.ZboardCreateDto;
 import com.seowoninfo.backend01.zboard.dto.ZboardModifyDto;
 import jakarta.persistence.Table;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.*;
 
 import java.util.ArrayList;
@@ -20,6 +17,7 @@ import java.util.List;
  */
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -65,15 +63,4 @@ public class Zboard extends Base {
     @OneToMany(mappedBy = "board")
     private List<Zfile> files = new ArrayList<>();
 
-    // 수정
-    public void modifyZboard(ZboardModifyDto item) {
-        this.boardTitle = item.getBoardTitle();
-        this.boardContents = item.getBoardContents();
-        this.priorityYn = item.getPriorityYn();
-    }
-
-    // 조회수추가
-    public void modifyViewCount(Long boardSLong) {
-        this.viewCount = this.viewCount++;
-    }
 }

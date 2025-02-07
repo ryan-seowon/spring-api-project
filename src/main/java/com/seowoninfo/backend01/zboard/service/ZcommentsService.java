@@ -67,9 +67,10 @@ public class ZcommentsService {
      * 댓글 등록
      */
     @Transactional
-    public ZcommentsResponseDto commentsCreate(ZcommentsCreateDto paramDto) {
-        Zboard board = boardRepository.findByBoardSeq(paramDto.getBoardSeq());
-        Zcomments entity = commentsRepository.save(Zcomments.toEntity(paramDto, board));
+    public ZcommentsResponseDto commentsCreate(ZcommentsCreateDto zcommentsCreateDto) {
+        Zboard board = boardRepository.findByBoardSeq(zcommentsCreateDto.getBoardSeq());
+        zcommentsCreateDto.setBoard(board);
+        Zcomments entity = commentsRepository.save(zcommentsCreateDto.toEntity());
         return ZcommentsResponseDto.toDto(entity);
     }
 
@@ -77,10 +78,10 @@ public class ZcommentsService {
      * 댓글 수정
      */
     @Transactional
-    public ZcommentsResponseDto commentsModify(Long boardSeq, ZcommentsModifyDto paramDto) {
-        Zcomments entity = commentsRepository.findById(boardSeq).orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_GET_NODATA, utilMessage.getMessage("exception.modify.nodata", null)));
-        entity.modifyComments(paramDto);
-        return ZcommentsResponseDto.toDto(entity);
+    public ZcommentsResponseDto commentsModify(Long boardSeq, ZcommentsModifyDto zcommentsModifyDto) {
+        Zcomments zcomments = commentsRepository.findById(boardSeq).orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_GET_NODATA, utilMessage.getMessage("exception.modify.nodata", null)));
+        zcommentsModifyDto.modifyComments(zcomments);
+        return ZcommentsResponseDto.toDto(zcomments);
     }
 
     /**

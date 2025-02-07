@@ -42,15 +42,4 @@ public class Zfile extends Base {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BOARD_SEQ")
 	private Zboard board;
-
-	// DTO -> Entity 로 변환
-	public static Zfile toEntity(ZfileCreateDto item, Zboard board) {
-		return Zfile.builder()
-				.uploadPath(item.getUploadPath())
-				.orgFileName(item.getOrgFileName())
-				.sysFileName(item.getSysFileName())
-				.board(board)
-				.build();
-	}
-	
 }

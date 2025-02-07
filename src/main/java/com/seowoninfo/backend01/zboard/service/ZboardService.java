@@ -102,7 +102,8 @@ public class ZboardService {
 				fileDto.setSysFileName(systemFileName.toString());
 
 				// 파일저장
-				fileRepository.save(Zfile.toEntity(fileDto, board));
+				fileDto.setBoard(board);
+				fileRepository.save(fileDto.toEntity());
 
 				// 물리 파일저장
 				UtilFile.makeFolders(FILE_BOARD_DIR + FILE_BOARD_PATH);
@@ -121,7 +122,7 @@ public class ZboardService {
 	@Transactional
 	public ZboardResponseDto boardModify(Long boardSeq, ZboardModifyDto zboardModifyDto, MultipartFile[] files) throws Exception{
 		Zboard board = boardRepository.findById(boardSeq).orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_GET_NODATA, utilMessage.getMessage("exception.modify.nodata", null)));
-		board.modifyZboard(zboardModifyDto);
+		zboardModifyDto.modifyZboard(board);
 
 		// UI상에서 삭제된 파일은 삭제처리해야함
 		// 파일정보삭제
@@ -159,7 +160,8 @@ public class ZboardService {
 				fileDto.setSysFileName(systemFileName.toString());
 				
 				// 파일저장
-				fileRepository.save(Zfile.toEntity(fileDto, board));
+				fileDto.setBoard(board);
+				fileRepository.save(fileDto.toEntity());
 				
 				// 물리 파일저장
 				UtilFile.makeFolders(FILE_BOARD_DIR + FILE_BOARD_PATH);

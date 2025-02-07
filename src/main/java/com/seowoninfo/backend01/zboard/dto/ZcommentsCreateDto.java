@@ -1,5 +1,7 @@
 package com.seowoninfo.backend01.zboard.dto;
 
+import com.seowoninfo.backend01.zboard.entity.Zboard;
+import com.seowoninfo.backend01.zboard.entity.Zcomments;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
@@ -21,4 +23,15 @@ public class ZcommentsCreateDto {
 	private Long parentsCommentsSeq;	// 상위댓글순번
 	@NotBlank
 	private String comments;						// 댓글내용
+	private Zboard board;
+
+	// DTO -> Entity 로 변환
+	public Zcomments toEntity() {
+		return Zcomments.builder()
+				.parentsCommentsSeq(getParentsCommentsSeq())
+				.comments(getComments())
+				.board(board)
+				.build();
+	}
+
 }

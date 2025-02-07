@@ -1,6 +1,7 @@
 package com.seowoninfo.backend01.zboard.dto;
 
 import com.seowoninfo.backend01.common.validation.YnCode;
+import com.seowoninfo.backend01.zboard.entity.Zboard;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -25,4 +26,11 @@ public class ZboardModifyDto {
 	@YnCode
 	private String priorityYn;		// 중요여부
 	private Long[] fileSeqs;		// 파일순번
+
+	// 수정
+	public void modifyZboard(Zboard zboard) {
+		zboard.setBoardTitle(boardTitle);
+		zboard.setBoardContents(boardContents);
+		zboard.setPriorityYn(priorityYn);
+	}
 }

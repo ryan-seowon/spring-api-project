@@ -5,10 +5,7 @@ import com.seowoninfo.backend01.zboard.dto.ZcommentsCreateDto;
 import com.seowoninfo.backend01.zboard.dto.ZcommentsModifyDto;
 import jakarta.persistence.Table;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.*;
 
 /**
@@ -16,6 +13,7 @@ import org.hibernate.annotations.*;
  */
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -48,18 +46,4 @@ public class Zcomments extends Base {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BOARD_SEQ")
 	private Zboard board;
-
-	// DTO -> Entity 로 변환
-	public static Zcomments toEntity(ZcommentsCreateDto item, Zboard board) {
-		return Zcomments.builder()
-				.parentsCommentsSeq(item.getParentsCommentsSeq())
-				.comments(item.getComments())
-				.board(board)
-				.build();
-	}
-	
-	// 수정
-	public void modifyComments(ZcommentsModifyDto item) {
-		this.comments = item.getComments();
-	}
 }
