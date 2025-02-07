@@ -51,6 +51,11 @@ server:
     api: http://localhost:8080
     front: http://localhost:3000
 
+# 파일암호화
+jasypt:
+  encryptor:
+    key: seowon
+
 # SWAGGER 설정
 springdoc:
   packages-to-scan: com.seowoninfo.backend01
