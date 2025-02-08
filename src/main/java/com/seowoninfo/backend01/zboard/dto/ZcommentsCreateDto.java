@@ -2,6 +2,7 @@ package com.seowoninfo.backend01.zboard.dto;
 
 import com.seowoninfo.backend01.zboard.entity.Zboard;
 import com.seowoninfo.backend01.zboard.entity.Zcomments;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
@@ -23,7 +24,10 @@ public class ZcommentsCreateDto {
 	private Long parentsCommentsSeq;	// 상위댓글순번
 	@NotBlank
 	private String comments;						// 댓글내용
+
+	@Hidden	// 파라미터에 포함시키지 않음
 	private Zboard board;
+
 
 	// DTO -> Entity 로 변환
 	public Zcomments toEntity() {
