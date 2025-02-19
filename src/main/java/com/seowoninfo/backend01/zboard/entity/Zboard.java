@@ -39,7 +39,7 @@ public class Zboard extends Base {
     private String boardTitle;
 
     @Comment("게시글내용")
-    @Column(name = "BOARD_CONTENTS", nullable = false, columnDefinition = "LONGTEXT")
+    @Column(name = "BOARD_CONTENTS", nullable = false, columnDefinition = "VARCHAR", length = 20000)
     private String boardContents;
 
     @Comment("조회수")

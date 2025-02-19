@@ -1,12 +1,17 @@
 spring:
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-#    url: ENC(wVayMmAiKVg3djKuF0H2YiyladonOax3uCg33FVubVXzyL40MpZ7cm3BRRFlsjPL++CNivoIrzI=)
-#    username: ENC(E4XynfZE11brJf8OvQGsvQ==)
-#    password: ENC(sTbPOAM+Upxrk9lBcfuH2A==)
-    url: jdbc:mariadb://61.251.164.178:3306/seowon
-    username: seowon
-    password: seowon
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    #    url: ENC(wVayMmAiKVg3djKuF0H2YiyladonOax3uCg33FVubVXzyL40MpZ7cm3BRRFlsjPL++CNivoIrzI=)
+#    #    username: ENC(E4XynfZE11brJf8OvQGsvQ==)
+#    #    password: ENC(sTbPOAM+Upxrk9lBcfuH2A==)
+#    url: jdbc:mariadb://61.251.164.178:3306/seowon
+#    username: seowon
+#    password: seowon
+
+      driver-class-name: org.postgresql.Driver
+      url: jdbc:postgresql://ryan-seowon-db.postgres.database.azure.com:5432/postgres
+      username: ryan
+      password: 1q2w#E$R
 
   jpa:
     open-in-view: false
@@ -78,8 +83,10 @@ springdoc:
   show-login-endpoint: true	# 로그인은 security UsernamePasswordAuthenticationFilter라 실제url 이 없어서 swagger에 나타나도록 설정 
   
 file:
-  path: /home/backend01/upload
-  
+  board:
+    dir: /home/backend01/upload
+    path: /board
+
 logging:
   level:
     root: info

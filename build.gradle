@@ -69,6 +69,9 @@ dependencies {
     // https://mvnrepository.com/artifact/org.mockito/mockito-core
     testImplementation 'org.mockito:mockito-core:5.15.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.2' // 추가
+    runtimeOnly 'org.postgresql:postgresql' // 추가
+    runtimeOnly 'com.h2database:h2' // 추가
 }
 
 // querydsl generated 경로 설정
@@ -84,4 +87,5 @@ clean {
 
 tasks.named('test') {
     useJUnitPlatform()
+    jvmArgs '-Xshare:off'
 }
