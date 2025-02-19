@@ -33,9 +33,12 @@ class JasyptConfigTest {
     @Test
     @DisplayName("비밀번호 암호화")
     public void passwordEncode(){
-        String url = "jdbc:mariadb://61.251.164.178:3306/seowon";
-        String username = "seowon";
-        String password = "seowon";
+//        String url = "jdbc:mariadb://61.251.164.178:3306/seowon";
+//        String username = "seowon";
+//        String password = "seowon";
+        String url = "jdbc:postgresql://ryan-seowon-db.postgres.database.azure.com:5432/postgres";
+        String username = "ryan";
+        String password = "1q2w#E$R";
         String secret = "ThisIsSeowonFrameworkAndThisFrameworkIsBorn20250101ByDev3";
 
         System.out.println("key = " + key);
