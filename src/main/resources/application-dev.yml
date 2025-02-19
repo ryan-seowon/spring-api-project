@@ -53,8 +53,8 @@ spring:
 
 server:
   host:
-    api: http://localhost:8080
-    front: http://localhost:3000
+    api: https://ryan-seowon-h3axhuhnegbdcpbn.koreacentral-01.azurewebsites.net
+    front: https://ryan-seowon-h3axhuhnegbdcpbn.koreacentral-01.azurewebsites.net
 
 # 파일암호화
 jasypt:
