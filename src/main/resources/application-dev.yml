@@ -90,4 +90,4 @@ file:
 logging:
   level:
     root: info
-    com.sw.sportal: debug
+    com.seowoninfo.backend01: debug
