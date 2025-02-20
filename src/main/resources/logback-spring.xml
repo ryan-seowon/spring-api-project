@@ -9,7 +9,7 @@
 		<!-- local log file path -->
 		<property name="LOG_PATH" value="/usr/logs/api"/>
 	</springProfile>
-	<springProfile name="dev">
+	<springProfile name="dev_temp">
 		<!-- dev log file path -->
 		<property name="LOG_PATH" value="/home/backend01/logs"/>
 	</springProfile>
