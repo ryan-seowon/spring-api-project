@@ -5,6 +5,10 @@ plugins {
     id "com.microsoft.azure.azurewebapp" version "1.10.0"
 }
 
+ext {
+    springCloudAzureVersion = "5.20.0"
+}
+
 group = 'com.seowoninfo'
 version = '0.0.1-SNAPSHOT'
 
@@ -29,6 +33,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
+    implementation 'com.azure.spring:spring-cloud-azure-starter-data-cosmos'
+    implementation 'com.azure.spring:spring-cloud-azure-starter-keyvault'
+    implementation 'com.azure.spring:spring-cloud-azure-starter-storage'
+    implementation 'com.azure.spring:spring-cloud-azure-starter-active-directory'
+    implementation 'com.azure.spring:spring-cloud-azure-starter'
+    implementation 'com.azure.spring:spring-cloud-azure-starter-jdbc-postgresql'
     compileOnly 'org.projectlombok:lombok'
 //    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
@@ -101,5 +111,11 @@ azurewebapp {
     }
     auth {
         type = 'azure_cli' // support azure_cli, oauth2, device_code and service_principal
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "com.azure.spring:spring-cloud-azure-dependencies:$springCloudAzureVersion"
     }
 }
